@@ -1,14 +1,12 @@
 import numpy as np
+from functions import *
 from matplotlib import pyplot as plt
 
-def quad(x, y):
-	return 1.125*x**2 + 0.5*x*y + 0.75*y**2 + 2*x + 2*y
-	
-def log_reg(x, y):
-	return 0.5*(x**2 + y**2) + 50*np.log(1 + np.exp(-0.5*y)) + 50*(1 + np.exp(0.2*x))
-	
-def himmelblaus(x, y):
-	return 0.1*(x**2 + y - 11)**2 + 0.1*(x + y**2 - 7)**2
-	
-def rosenbrock(x, y):
-	return 0.002*(1 - x)**2 + 0.2*(y*x**2)**2
+def update(cur_point, lr, func):
+	gradients = {'quad'		: grad_quad,
+		     'log_reg'		: grad_log_reg,
+		     'himmelblaus'	: grad_himmelblaus,
+		     'rosenbrock'	: grad_rosenbrock
+		    }
+	updt	= cur_point - lr*gradients[func](*cur_point)
+	return updt

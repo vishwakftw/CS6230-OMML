@@ -21,7 +21,7 @@ set title "Ridge Regularized Logistic Regression"
 set zlabel "f_{LL}(x, y)"
 set view ARG3, ARG4
 set output "ridge_regularized_logistic_regression.eps"
-splot 0.5*(x**2 + y**2) + 50*log(1 + exp(-0.5*y)) + 50*(1 + exp(0.2*x))
+splot 0.5*(x**2 + y**2) + 50*log(1 + exp(-0.5*y)) + 50*log(1 + exp(0.2*x))
 
 set xrange [-6:6]
 set yrange [-6:6]
