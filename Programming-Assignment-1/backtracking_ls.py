@@ -1,23 +1,39 @@
 import numpy as np
+from numpy.linalg import norm
 from functions import *
 from argparse import ArgumentParser
 from matplotlib import pyplot as plt
 
 # Fixed Step Size Updates
-def update(cur_point, lr, func):
-	gradients = {'quad'		: grad_quad,
-		     'log_reg'		: grad_log_reg,
-		     'himmelblaus'	: grad_himmelblaus,
-		     'rosenbrock'	: grad_rosenbrock
-		    }
-	updt	= cur_point - lr*gradients[func](*cur_point)
-	return updt
+def update(cur_point, func):
+	gradients	= {'quad'		: grad_quad,
+		 	   'log_reg'		: grad_log_reg,
+			   'himmelblaus'	: grad_himmelblaus,
+		    	   'rosenbrock'		: grad_rosenbrock
+		    	  }
+	function	= {'quad'		: quad,
+			   'log_reg'		: log_reg,
+			   'himmelblaus'	: himmelblaus,
+			   'rosenbrock'		: rosenbrock
+			  }
+	lr	= 1
+	alpha	= 0.5
+	beta	= 0.5
+	fn	= function[func]
+	grd	= gradients[func]
+	i	= 0
+	
+	while fn(*(cur_point - lr*grd(*cur_point))) > fn(*cur_point) - alpha*lr*norm(grd(*cur_point))**2 and i < 10:
+		lr	= beta*lr
+		i	= i + 1
+	
+	updt	= cur_point - lr*grd(*cur_point)
+	return updt, lr
 			
 # Argument parser for arguments
 parser	= ArgumentParser()
 parser.add_argument('--func_name', required=True, help='quad | log_reg | himmelblaus | rosenbrock')
 parser.add_argument('--init_type', required=True, help='rand | static')
-parser.add_argument('--lr', required=True, type=float, help='learning rate')
 opt	= parser.parse_args()
 
 # Set initial point
@@ -61,9 +77,10 @@ elif opt.func_name == 'rosenbrock':
 
 plt.contour(X, Y, Z, levels=levels, cmap=plt.cm.jet)
 
+lr = 'init'
 for i in range(0, 1000):
 	plt.plot(*xs, 'k.', markersize=5)
-	xs	= update(xs, opt.lr, opt.func_name)
-	plt.title('Iteration ${0}$ Current Point: $({1}, {2})$'.format(i+1, round(xs[0], 5), round(xs[1], 5)), size=20)
+	plt.title('Iteration ${0}$ Learning Rate = ${1}$ Current Point: $({2}, {3})$'.format(i+1, lr, round(xs[0], 5), round(xs[1], 5)), size=20)
+	xs, lr	= update(xs, opt.func_name)
 	plt.pause(0.0001)
 plt.show()

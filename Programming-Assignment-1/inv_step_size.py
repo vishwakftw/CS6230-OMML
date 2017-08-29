@@ -17,7 +17,6 @@ def update(cur_point, lr, func):
 parser	= ArgumentParser()
 parser.add_argument('--func_name', required=True, help='quad | log_reg | himmelblaus | rosenbrock')
 parser.add_argument('--init_type', required=True, help='rand | static')
-parser.add_argument('--lr', required=True, type=float, help='learning rate')
 opt	= parser.parse_args()
 
 # Set initial point
@@ -63,7 +62,7 @@ plt.contour(X, Y, Z, levels=levels, cmap=plt.cm.jet)
 
 for i in range(0, 1000):
 	plt.plot(*xs, 'k.', markersize=5)
-	xs	= update(xs, opt.lr, opt.func_name)
-	plt.title('Iteration ${0}$ Current Point: $({1}, {2})$'.format(i+1, round(xs[0], 5), round(xs[1], 5)), size=20)
+	xs	= update(xs, 1/(i+1), opt.func_name)
+	plt.title('Iteration ${0}$ Learning Rate: ${1}$ Current Point: $({2}, {3})$'.format(i+1, round(1/(i+1), 5), round(xs[0], 5), round(xs[1], 5)), size=20)
 	plt.pause(0.0001)
 plt.show()
