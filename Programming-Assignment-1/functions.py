@@ -40,7 +40,7 @@ def grad_himmelblaus(x, y):
 	return np.array([dx, dy])
 	
 def grad_rosenbrock(x, y):
-	dt1	= 0.004**(1 - x)
+	dt1	= 0.004*(1 - x)
 	dt2	= 0.4*(y - x**2)
 	dt1x	= -1
 	dt2x	= -2*x
