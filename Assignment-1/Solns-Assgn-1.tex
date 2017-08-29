@@ -1,0 +1,191 @@
+\documentclass{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\title{Solutions to the Assignment - 1 : CS6230 - \\
+Optimization Methods in Machine Learning}
+\author{Vishwak Srinivasan\\
+\texttt{CS15BTECH11043}}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section*{Question 1}
+\begin{flushleft}
+Without loss of generality, assume that \(C\) is compact and \(D\) is just closed, since we know that \(C - D\) is closed. Now we need to show that \(\exists c^{*} \in C, d^{*} \in D\) such that \(\displaystyle c^{*}, d^{*} = \text{arg} \inf_{x \in C, y \in D} d(x, y)\). This can be seen from the definition of the compactness of \(C\) and the closedness of \(D\). 
+\(\newline\)
+
+Now construct \(z = c^{*} - d^{*}\). Let us show the following: \(\displaystyle \inf_{x \in C} x^{T}z \geq c^{*^{T}}z\). We prove this by contradiction:
+\(\newline\)
+
+Assume that \(\displaystyle \inf_{x \in C} x^{T}z < c^{*^{T}}z\). Since \(x\) and \(c^{*} \in C\), the convex combination of \(x\) and \(c^{*}\) must \(\in C\). Now let us find out the distance between \(x_{\epsilon} = \epsilon x + (1 - \epsilon) c^{*}\) and \(d^{*}\). This is equal to:
+\begin{gather}
+||x_{\epsilon} - d^{*}||^{2} = ||\epsilon x + (1 - \epsilon)c^{*} - d^{*}||^{2} = ||c^{*} - d^{*} + \epsilon(x - c^{*})||^{2} \\
+\implies ||x_{\epsilon} - d^{*}||^{2} = \langle c^{*} - d^{*} + \epsilon(x - c^{*}) , c^{*} - d^{*} + \epsilon(x - c^{*}) \rangle \\
+\implies ||x_{\epsilon} - d^{*}||^{2} = ||c^{*} - d^{*}||^{2} + \epsilon^{2}||x - c^{*}||^{2} + 2\epsilon\langle x - c^{*}, c^{*} - d^{*}\rangle
+\end{gather}
+
+From the assumption taken, we know that \(\langle x - c^{*} , z\rangle < 0\). The last term in equation 3 will use this fact and hence for a choice of \(\epsilon\), \(||x_{\epsilon} - d^{*}||^{2} < ||c^{*} - d^{*}||^{2}\), thereby violating the fact that \(c^{*}, d^{*}\) are the closest points from \(C, D\) respectively.
+\(\newline\)
+
+We also know that: \(\langle c^{*}, z \rangle > \langle d^{*}, z \rangle\). This can be seen by sending the \(\langle d^{*}, z \rangle\) term to the LHS, and then that becomes \(||z||^{2}\). 
+\(\newline\)
+
+Just as how we proved the claim that \(\displaystyle \inf_{x \in C} x^{T}z \geq c^{*^{T}}z\), we will prove \(\displaystyle d^{*^{T}}z \geq \sup_{y \in D} y^{T}z\). Assume that \(d^{*^{T}}z < \sup_{y\in D} y^{T}z\). Now, consider the distance between \(y_{\epsilon} = \epsilon y + (1-\epsilon)d^{*}\) and \(c^{*}\). We know that \(y_{\epsilon} \in D\) by convexity of \(D\). 
+
+\begin{gather}
+||c^{*} - y_{\epsilon}||^{2} = ||c^{*} - \epsilon y - (1 - \epsilon)d^{*}||^{2} = ||c^{*} - d^{*} + \epsilon(d^{*} - y)||^{2} \\
+\implies ||c^{*} - y_{\epsilon}||^{2} = \langle c^{*} - d^{*} + \epsilon(d^{*} - y) , c^{*} - d^{*} + \epsilon(d^{*} - y) \rangle \\
+\implies ||c^{*} - y_{\epsilon}||^{2} = ||c^{*} - d^{*}||^{2} + \epsilon^{2}||d^{*} - y||^{2} + 2\epsilon\langle c^{*} - d^{*}, d^{*} - y \rangle 
+\end{gather}
+
+From the assumption taken, we know that \(\langle d^{*} - y, z\rangle < 0\). Again, the last term in equation 6 will use this fact and hence for choice of \(\epsilon\), \(||c^{*} - y_{\epsilon}||^{2} < ||c^{*} - d^{*}||^{2}\), thereby violating the fact that \(c^{*}, d^{*}\) are the closest points from \(C, D\) respectively. 
+\(\newline\)
+
+Using the above facts: \(\displaystyle \inf_{x \in C} x^{T}z \geq c^{*^{T}}z \geq d^{*^{T}}z \geq \sup_{y \in D} y^{T}z \implies \inf_{x \in C} x^{T}z > \sup_{y \in D} y^{T}z\). Hence proved.
+\end{flushleft}
+
+\section*{Question 2}
+\begin{flushleft}
+Consider the functions \(f_{1}(x) = \sqrt{|x|}\) and \(f_{2}(x) = \sqrt{|x - 1|}\). Now we know that the \(\alpha\)-sublevel sets of both \(f_{1}\) and \(f_{2}\) are convex for all \(\alpha\), but the functions \(f_{1}\) and \(f_{2}\) are themselves not convex. This makes them quasiconvex functions. 
+\(\newline\)
+
+Now take the sum of these functions. Let \(f(x) = f_{1}(x) + f_{2}(x) = \sqrt{|x|} + \sqrt{|x-1|}\). Note that this function has two local minima: one at \(x = 0\) and the other at \(x = 1\). Consider \(\alpha \in [1, \sqrt{2}]\). Note that the \(\alpha\)-sublevel sets for this choice of \(\alpha\) is not convex, hence telling us that the sum of two quasi-convex functions is not necessarily convex.
+\end{flushleft}
+
+\section*{Question 4}
+\begin{flushleft}
+Proving the implication: if \(f\) is convex, then inequality in the question holds:
+\(\newline\)
+
+If \(f\) is convex: then:
+\begin{equation}
+\label{4_1}
+f(y) \geq f(x) + \nabla f(x)^{T} (y - x)
+\end{equation}
+Inverting \(x\) and \(y\) we get:
+\begin{equation}
+\label{4_2}
+f(x) \geq f(y) + \nabla f(y)^{T} (x - y)
+\end{equation}
+
+Adding equations \ref{4_1} and \ref{4_2}, we get:
+\begin{equation}
+\left(\nabla f(x)^{T} -  \nabla f(y)^{T}\right)(y-x) \leq 0 \implies \left(\nabla f(x)^{T} - \nabla f(y)^{T}\right) ( x - y) \geq 0
+\end{equation}
+
+Proving the implication: if the condition in the question holds, then the function is convex
+\(\newline\)
+
+Now from \((\nabla f(\mathbf{x}) - \nabla f(\mathbf{y}))^{T}(x - y ) \geq 0\). This suggests that \(\nabla f\) is increasing. Consider a function: \(g(\theta) = f(\theta\mathbf{x} + (1 - \theta)\mathbf{y}) \implies g'(0) = \nabla f(\mathbf{y})^{T}(\mathbf{y} - \mathbf{x})\). 
+
+Now we know that: \(g(1) - g(0) = \displaystyle \int_{0}^{1} g'(\theta) d\theta \geq g'(0) d\theta\). This is because \(\nabla f\) is non-decreasing as shown above. \(g(1) - g(0) \geq g'(0) = \nabla f(\mathbf{x})^{T} (\mathbf{y} - \mathbf{x}) \implies g(0) \geq g(1) + \nabla f(\mathbf{y})^{T}(\mathbf{x} -\mathbf{y})\). From this: we get: \(f(\mathbf{x}) \geq f(\mathbf{y}) + \nabla f(\mathbf{y})^{T}(\mathbf{x} - \mathbf{y})\), which is the first order condition.
+\end{flushleft}
+
+\section*{Question 8}
+\subsection*{Question 8.a.}
+\begin{flushleft}
+\begin{equation}
+\label{8_1_1}
+f(\mathbf{x}) = \displaystyle - \sum_{i=1}^{n} \log(x_{i}) = - \log(x_{1}) - \log(x_{2}) - \ldots - \log(x_{n})
+\end{equation}
+
+Calculating the gradient of equation \ref{8_1_1} we get:
+\begin{equation}
+\nabla f(\mathbf{x}) = \langle -\frac{1}{x_{1}}, -\frac{1}{x_{2}}, \ldots, -\frac{1}{x_{n}} \rangle
+\end{equation}
+
+Calculating the Hessian of equation \ref{8_1_1} we get:
+\begin{equation}
+\displaystyle \nabla^{2} f(\mathbf{x}) [i,j] = \begin{cases}
+\frac{1}{x^{2}_{i}} & \text{if } i = j \\
+0 & \text{if } i \neq j
+\end{cases}
+\end{equation}
+
+Now note that the eigenvalues of \(\nabla^{2} f(\mathbf{x})\) are \(\Lambda = \lbrace\frac{1}{x^{2}_{1}}, \frac{1}{x^{2}_{2}}, \ldots, \frac{1}{x^{2}_{n}}\rbrace\). Since the domain of \(f\) is \(\mathbb{R}^{n}_{++}\), we can most certainly assure that \(\nexists \lambda \in \Lambda\), such that \(\lambda \leq 0\). Hence it can be said that \(f\) is \(k\)-strongly convex with \(k = \min \Lambda\).
+\end{flushleft}
+
+\subsection*{Question 8.b.}
+\begin{flushleft}
+\begin{equation}
+\label{8_2_1}
+f(\mathbf{x}) = \displaystyle - \sum_{i=1}^{n} x_{i} \log(x_{i}) = -x_{1}\log(x_{1}) -x_{2}\log(x_{2}) -\ldots -x_{n}\log(x_{n})
+\end{equation}
+
+Calculating the gradient of equation \ref{8_2_1} we get:
+\begin{equation}
+\nabla f(\mathbf{x}) = \langle -(1 + \log(x_{1})), -(1 + \log(x_{2})), \ldots, -(1 + \log(x_{n})) \rangle
+\end{equation}
+
+Calculating the Hessian of equation \ref{8_2_1} we get:
+\begin{equation}
+\displaystyle \nabla^{2} f(\mathbf{x}) [i,j] = \begin{cases}
+-\frac{1}{x_{i}} & \text{if } i = j \\
+0 & \text{if } i \neq j
+\end{cases}
+\end{equation}
+
+Note that this matrix is diagonal and the eigenvalues of this matrix are \(\Lambda = \lbrace\frac{-1}{x_1}, \frac{-1}{x_2}, \ldots, \frac{-1}{x_n}\rbrace\). Since the domain of \(f\) is \(\mathbb{R}^{n}_{+}\), we can definitely tell that the eigenvalues are all less than \(0\), hence telling us that the function is non-convex.
+\end{flushleft}
+\section*{Question 9}
+\subsection*{Question 9.a.}
+\begin{flushleft}
+\textit{Claim: } \(\displaystyle f(\mathbf{x}) = \frac{1}{\mathbf{x}^T P \mathbf{x} + 1}\) is quasi-concave for \(P \in \mathbb{S}^{n}_{++}\). 
+\(\newline\)
+
+\textit{Proof: } Consider the \(\alpha\)-superlevel sets of \(f(\mathbf{x})\). Denote it by \(\mathcal{U}_{\alpha}\).
+\begin{equation}
+\mathcal{U}_{\alpha} = \lbrace \mathbf{x} : \frac{1}{\mathbf{x}^{T} P \mathbf{x} + 1} \geq \alpha \rbrace
+\end{equation}
+
+Assuming \(\alpha > 0\), we get: \(\displaystyle \frac{1}{\alpha} - 1 \geq \mathbf{x}^{T} P \mathbf{x} \geq 0 \implies \alpha \in (0, 1)\). Consider \(\mathbf{y}\) also such that \(\displaystyle \frac{1}{\alpha} - 1 \geq \mathbf{y}^{t} P \mathbf{y}\). Now for all \(\theta \in [0,1]\), \(\mathbf{z} = \theta\mathbf{x} + (1 - \theta)\mathbf{y}\). We will show that: \(\mathbf{z}^{T} P \mathbf{z} \leq \frac{1}{\alpha} - 1\). We know that \(\displaystyle \mathbf{z}^{T} P \mathbf{z} \leq \theta^{2} \mathbf{x}^{T} P \mathbf{x} + (1 - \theta)^2 \mathbf{y}^{T} P \mathbf{y} \leq \theta^{2} \left(\frac{1}{\alpha} - 1\right) + (1 - \theta)^2 \left(\frac{1}{\alpha} - 1\right) = \frac{1}{\alpha} - 1\). Hence we now know that the \(\alpha\)-superlevel set of \(f(\mathbf{x})\) for \(\alpha \in (0, 1)\) is convex.
+\(\newline\)
+
+Now if \(\alpha = 1\) then, we get \(\mathbf{x}^{T} P \mathbf{x} \leq 0\), and since \(P \in \mathbb{S}^{n}_{++}\), \(\mathbf{x}^{T} P \mathbf{x} = 0\) is only possible, and \(\mathbf{x} = \mathbf{0} \implies \mathcal{U}_{1} = \{\mathbf{0}\}\). A singleton set is convex too.
+\(\newline\)
+
+Now if \(\alpha > 1\) then, we get \(\mathbf{x}^{T} P \mathbf{x} \leq \frac{1}{\alpha} - 1 < 0 \implies \mathbf{x}^{T} P \mathbf{x} < 0\). We know that \(\nexists \mathbf{x}\) for which this holds \(\implies U_{\alpha > 1} = \emptyset\) , and we know that an empty set is convex too.
+\(\newline\)
+
+Consider \(\alpha = 0\). Now we get \(1 \geq 0\), which is true for all \(\mathbf{x} \in \mathbb{R}^{n}\), hence \(\mathcal{U}_{0} = \mathbb{R}^{n}\), which is convex.
+\(\newline\)
+
+Last case, consider \(\alpha < 0\). Now we get \(\mathbf{x}^{T} P \mathbf{x} \geq \displaystyle \frac{1}{\alpha} - 1\). Since \(\alpha < 0 \implies \frac{1}{\alpha} < 0 \implies \frac{1}{\alpha} - 1 < 0\). But we know that \(\mathbf{x}^{T} P \mathbf{x} \geq 0\), and hence \(\mathcal{U}_{\alpha < 0} = \mathbb{R}^{n}\) which is convex.
+\(\newline\)
+
+Summarizing the cases:
+\begin{center}
+\begin{tabular}{| c | c |}
+\hline
+Choice of \(\alpha\) & \(\mathcal{U}_{\alpha}\) \\
+\hline
+\hline
+\(\alpha > 1\) & \(\emptyset\) \\
+\hline
+\(\alpha = 1\) & \(\{\mathbf{0}\}\) \\
+\hline
+\(\alpha \in (0, 1)\) & A convex set \\
+\hline
+\(\alpha = 0\) & \(\mathbb{R}^{n}\) \\
+\hline
+\(\alpha < 0\) & \(\mathbb{R}^{n}\) \\
+\hline
+\end{tabular}
+\end{center}
+
+From the aforementioned cases, it should be obvious that no matter what \(\alpha\) we choose, we get a convex superlevel set, hence proving the claim that \(f(\mathbf{x})\) is quasi-concave.
+
+\end{flushleft}
+\subsection*{Question 9.b.}
+\begin{flushleft}
+Using the composition property stated in Pg. 102 in Boyd and Vanderberghe, where \(A = \mathbb{I}, b = \mathbf{0}\) and \(\mathbf{c} = \mathbf{a}, d = 1\) (given in this question) and the facts that:
+\begin{itemize}
+\item \(f(\mathbf{x}) = \mathbf{x}^{T} P \mathbf{x}\) is convex, and hence quasiconvex
+\item \(\displaystyle f\left(\mathbf{\frac{x}{\mathbf{a}^{T}\mathbf{x} + 1}}\right) = \left(\frac{\mathbf{x}^{T} P \mathbf{x}}{(\mathbf{a}^{T}\mathbf{x} + 1)^2}\right)\) is hence quasiconvex from the fact mentioned above in Boyd and Vanderberghe.
+\end{itemize}
+\end{flushleft}
+
+\end{document}
