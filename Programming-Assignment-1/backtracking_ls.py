@@ -38,7 +38,12 @@ opt	= parser.parse_args()
 
 # Set initial point
 if opt.init_type == 'rand':
-	xs	= np.random.uniform(low=-6, high=6, size=2)
+	if opt.func_name == 'rosenbrock':
+		x	= np.random.uniform(low=-3, high=3)
+		y	= np.random.uniform(low=-6, high=6)
+		xs	= np.array([x, y])
+	else:
+		xs	= np.random.uniform(low=-6, high=6, size=2)
 
 elif opt.init_type == 'static':
 	xs	= np.array([2, 3])
@@ -79,7 +84,6 @@ plt.contour(X, Y, Z, levels=levels, cmap=plt.cm.jet)
 
 all_updates	= []
 all_bcktrck	= []
-lr = 'init'
 for i in range(0, 1000):
 	all_updates.append(xs)
 	xs, lr	= update(xs, opt.func_name)
@@ -87,7 +91,7 @@ for i in range(0, 1000):
 all_updates.append(xs)
 
 all_updates	= np.array(all_updates)
-plt.plot(all_updates[:,0], all_updates[:,1], 'k.-')
+plt.plot(all_updates[:,0], all_updates[:,1], 'k.-', markersize=5)
 plt.title('Iteration ${0}$ Current Point: $({1}, {2})$'.format(i+1, round(xs[0], 5), round(xs[1], 5)), size=20)
 plt.show()
 
