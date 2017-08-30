@@ -77,10 +77,25 @@ elif opt.func_name == 'rosenbrock':
 
 plt.contour(X, Y, Z, levels=levels, cmap=plt.cm.jet)
 
+all_updates	= []
+all_bcktrck	= []
 lr = 'init'
 for i in range(0, 1000):
-	plt.plot(*xs, 'k.', markersize=5)
-	plt.title('Iteration ${0}$ Learning Rate = ${1}$ Current Point: $({2}, {3})$'.format(i+1, lr, round(xs[0], 5), round(xs[1], 5)), size=20)
+	all_updates.append(xs)
 	xs, lr	= update(xs, opt.func_name)
-	plt.pause(0.0001)
+	all_bcktrck.append(np.array([i+1, -np.log2(lr)]))
+all_updates.append(xs)
+
+all_updates	= np.array(all_updates)
+plt.plot(all_updates[:,0], all_updates[:,1], 'k.-')
+plt.title('Iteration ${0}$ Current Point: $({1}, {2})$'.format(i+1, round(xs[0], 5), round(xs[1], 5)), size=20)
 plt.show()
+
+plt.clf()
+all_bcktrck	= np.array(all_bcktrck)
+plt.xlim(0, 1001)
+plt.ylim(-0.5, 10.5)
+plt.yticks(np.arange(0, 11, 1.0))
+plt.plot(all_bcktrck[:,0], all_bcktrck[:,1], 'k.')
+plt.title('Variation of Learning Rate with iteration')
+plt.show() 

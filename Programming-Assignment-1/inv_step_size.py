@@ -60,9 +60,13 @@ elif opt.func_name == 'rosenbrock':
 
 plt.contour(X, Y, Z, levels=levels, cmap=plt.cm.jet)
 
+all_updates	= []
 for i in range(0, 1000):
-	plt.plot(*xs, 'k.', markersize=5)
+	all_updates.append(xs)
 	xs	= update(xs, 1/(i+1), opt.func_name)
-	plt.title('Iteration ${0}$ Learning Rate: ${1}$ Current Point: $({2}, {3})$'.format(i+1, round(1/(i+1), 5), round(xs[0], 5), round(xs[1], 5)), size=20)
-	plt.pause(0.0001)
+all_updates.append(xs)
+
+all_updates	= np.array(all_updates)
+plt.plot(all_updates[:,0], all_updates[:,1], 'k.-')
+plt.title('Iteration ${0}$ Current Point: $({2}, {3})$'.format(i+1, round(1/(i+1), 5), round(xs[0], 5), round(xs[1], 5)), size=20)
 plt.show()
