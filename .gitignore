@@ -1,0 +1,5 @@
+*.aux
+*.eps
+*.log
+*.pdf
+*.pyc
