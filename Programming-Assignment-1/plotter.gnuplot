@@ -28,7 +28,7 @@ splot 0.5*(x**2 + y**2) + 50*log(1 + exp(-0.5*y)) + 50*log(1 + exp(0.2*x))
 set xrange [-6:6]
 set yrange [-6:6]
 set title font ",30"
-set title "Himmelblaus Function"
+set title "Himmelblau's Function"
 set zlabel "f_{H}(x, y)"
 set view ARG5, ARG6
 set output "himmelblaus_function.eps"

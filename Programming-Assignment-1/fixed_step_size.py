@@ -44,7 +44,7 @@ if opt.func_name == 'quad':
 	Z	= quad(X, Y)
 
 elif opt.func_name == 'log_reg':
-	levels	= np.linspace(0, 265, 212)
+	levels	= np.linspace(40, 265, 180)
 	xmin, xmax, xstep	= -6, 6, 0.05
 	ymin, ymax, ystep	= -6, 6, 0.05
 	X, Y	= np.meshgrid(np.arange(xmin, xmax + xstep, xstep), np.arange(ymin, ymax + ystep, ystep))
