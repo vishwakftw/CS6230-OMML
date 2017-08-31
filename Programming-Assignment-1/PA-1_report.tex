@@ -30,13 +30,13 @@ These functions were plotted using \texttt{GNUplot}, a terminal based plotting t
 \begin{figure}[H]
 \begin{minipage}{0.45\linewidth}
 \centering
-\includegraphics[width=0.75\textwidth]{quadratic_function}
+\includegraphics[width=0.75\textwidth]{./images/quadratic_function}
 \caption{Note the basin (dark region in the middle)}
 \end{minipage}
 \hfill
 \begin{minipage}{0.45\linewidth}
 \centering
-\includegraphics[width=0.75\textwidth]{ridge_regularized_logistic_regression}
+\includegraphics[width=0.75\textwidth]{./images/ridge_regularized_logistic_regression}
 \caption{Note the basin (slightly darker region near \((-4, 4)\))}
 \end{minipage}
 \end{figure}
@@ -44,21 +44,18 @@ These functions were plotted using \texttt{GNUplot}, a terminal based plotting t
 \begin{figure}[H]
 \begin{minipage}{0.45\linewidth}
 \centering
-\includegraphics[width=0.75\textwidth]{himmelblaus_function}
+\includegraphics[width=0.75\textwidth]{./images/himmelblaus_function}
 \caption{Note the 4 basins and a plateau approximately in the middle of them}
 \end{minipage}
 \hfill
 \begin{minipage}{0.45\linewidth}
 \centering
-\includegraphics[width=0.75\textwidth]{rosenbrock_banana_function}
+\includegraphics[width=0.75\textwidth]{./images/rosenbrock_banana_function}
 \caption{Note the valley (dark parabolic structure)}
 \end{minipage}
 \end{figure}
 
 Gradient Descent was the algorithm used to find attain the closest minimum from the point of initialization. The reason \textit{closest minimum} is explicitly mentioned is because of the existence of multiple minima in the Himmelblaus function, and the dynamics of Gradient Descent dictate that the result of the algorithm will lie at the closest basin of attraction.
-\(\newline\)
-
-The first Gradient Descent method used was Vanilla Gradient Descent with a fixed step size to be chosen from \(\lbrace 0.3, 0.1, 0.01 \rbrace\). The point of initializations were one fixed point -- \((2,3)\) for all functions and two other points chosen randomly from the domain in consideration of the functions. My implementation chooses these points from a uniform distribution over the domain of the functions.
 \(\newline\)
 
 We are going to evaluate the performance of different learning rate settings for the static initialization at \((2,3)\) by considering the different in the function values at the optimal and last update i.e., \(1000^{th}\) iteration. The optimal values calculated analytically (or using the Newton-Raphson method for \(f_{LL}(x, y)\)) are as follows:
@@ -78,21 +75,86 @@ Rosenbrock's Banana Function & \(0.0\) & \((1, 1)\)\\
 \end{tabular}
 \end{center}
 
+The first Gradient Descent method used was Vanilla Gradient Descent with a fixed step size to be chosen from \(\lbrace 0.3, 0.1, 0.01 \rbrace\). The point of initializations were one fixed point -- \((2,3)\) for all functions and two other points chosen randomly from the domain in consideration of the functions. My implementation chooses these points from a uniform distribution over the domain of the functions. The below table shows the difference \(f(\mathbf{x}^{(1000)}) - f(\mathbf{x}^{*})\) for initialization at \((2,3)\).
+\(\newline\)
+
 \begin{center}
 \begin{tabular}{|c|c|c|c|}
 \hline
 & 0.3 & 0.1 & 0.01 \\
 \hline
-\(f_{Q}(x, y)\) & & & \\
+\(f_{Q}(x, y)\) & 0 & 0 & 0\\
 \hline
-\(f_{LL}(x, y)\) & & & \\
+\(f_{LL}(x, y)\) & 0 & 0 & 0\\
 \hline
-\(f_{H}(x, y)\) & & & \\
+\(f_{H}(x, y)\) & 1.769 & 0 & 0 \\
 \hline
-\(f_{R}(x, y)\) & & & \\
+\(f_{R}(x, y)\) & 0.00092 & 0.00106 & 0.00112 \\
 \hline
 \end{tabular}
 \end{center}
+
+From the above table it can be seen that for any setting of learning rate from the given values, the algorithm converges to the minimum for the convex functions: \(f_{Q}\) and \(f_{LL}\). This is natural from what we have learnt that gradient descent will eventually converge to the minimum for convex functions. In \(f_{H}\), convergence was seen for the step size being set to \(0.1\) and \(0.01\), but there was an oscillation observed in \(0.3\), hence the point got pushed away from the minimum. In the case of \(f_{R}\), the valley like structure makes the gradient updates slower and slower and hence none of the settings make it to the minimum.
+\(\newline\)
+
+The next Gradient Descent method used was Backtracking Line Search with Gradient Descent. Here we consider the approximation:
+\begin{equation*}
+f(\mathbf{x} + t\nabla f(\mathbf{x})) \approx f(\mathbf{x}) - t\alpha ||\nabla f(\mathbf{x})||^{2}_{2}
+\end{equation*}
+
+The update step for \(t\) is \(t := \beta t\). \(\alpha = 0.5\) and \(\beta = 0.5\) is our settings. Below are the value of \(f(\mathbf{x}^{(1000)}) - f(\mathbf{x}^{*})\) for initialization at \((2,3)\).
+\(\newline\)
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+\(f_{Q}(x, y)\) & \(f_{LL}(x, y)\) & \(f_{H}(x, y)\) & \(f_{R}(x, y)\) \\
+\hline
+0 & 0 & 0 & 0.00078 \\
+\hline
+\end{tabular}
+\end{center}
+
+This shows the effectiveness of backtracking line search based Gradient Descent. It still could not navigate to the minimum in \(f_{R}(x, y)\), that is the nature of the valley. As learnt in class, we can see the effectiveness of backtracking line search here too.
+\(\newline\)
+
+The last Gradient Descent method used was an annealing schedule for the learning rate. We set the learning rate to \(\frac{1}{k}\) where \(k\) is the iteration number. Below are the values of \(f(\mathbf{x}^{(1000)}) - f(\mathbf{x}^{*})\) for initialization at \((2, 3)\).
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+\(f_{Q}(x, y)\) & \(f_{LL}(x, y)\) & \(f_{H}(x, y)\) & \(f_{R}(x, y)\) \\
+\hline
+0 & 0 & 0 & 0.00062 \\
+\hline
+\end{tabular}
+\end{center}
+
+The paths are all affected by the initial high learning rate. In the case of \(f_{Q}\), we jump to the other side of the basin in the first step and then jump back again, and then slowly begin to converge. In the case of \(f_{LL}\), we jump to the other side of the minimum and then to and fro about the minimum and then converge. The most interesting case was in \(f_{H}\). Due to the high learning rate, we end near another local minimum close to \((-3.779, -3.283)\) and infact do not converge at the closest local minimum to the point of initialization, which is \((3, 2)\). In \(f_{R}\), we make a relatively large jump, but still get stuck in the valley. From what we have learnt in class, setting large learning rate initially might not help if our initialization is close to any minimum/basin of attraction. Below are the graphs:
+
+\begin{figure}[H]
+\begin{minipage}{0.45\linewidth}
+\includegraphics[width=0.9\textwidth]{./images/quad_inv}
+\caption{\(f_{Q}\)}
+\end{minipage}
+\hfill
+\begin{minipage}{0.45\linewidth}
+\includegraphics[width=0.9\textwidth]{./images/log_reg_inv}
+\caption{\(f_{LL}\)}
+\end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+\begin{minipage}{0.45\linewidth}
+\includegraphics[width=0.9\textwidth]{./images/himmelblau_inv}
+\caption{\(f_{H}\)}
+\end{minipage}
+\hfill
+\begin{minipage}{0.45\linewidth}
+\includegraphics[width=0.9\textwidth]{./images/rosenbrock_inv}
+\caption{\(f_{R}\)}
+\end{minipage}
+\end{figure}
 
 \end{flushleft}
 \end{document}

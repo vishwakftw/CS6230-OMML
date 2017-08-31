@@ -72,6 +72,15 @@ for i in range(0, 1000):
 	xs	= update(xs, opt.lr, opt.func_name)
 all_updates.append(xs)
 
+if opt.func_name == 'quad':
+	print(quad(*xs))
+elif opt.func_name == 'log_reg':
+	print(log_reg(*xs))
+elif opt.func_name == 'himmelblaus':
+	print(himmelblaus(*xs))
+elif opt.func_name == 'rosenbrock':
+	print(rosenbrock(*xs))
+
 all_updates	= np.array(all_updates)
 plt.plot(all_updates[:,0], all_updates[:,1], 'k.-', markersize=5)
 plt.title('Iteration ${0}$ Current Point: $({1}, {2})$'.format(i+1, round(xs[0], 5), round(xs[1], 5)), size=20)
