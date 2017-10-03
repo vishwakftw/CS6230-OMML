@@ -1,0 +1,220 @@
+\documentclass[10.5pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{bookmark}
+
+\title{Solutions to the Assignment - 2 : CS6230 - \\
+Optimization Methods in Machine Learning}
+\author{Vishwak Srinivasan\\
+\texttt{CS15BTECH11043}}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section*{Question 2}
+\begin{flushleft}
+To prove convexity, consider 2 points: \(x\) and \(y\).
+\subsubsection*{Case 1}
+Let \(x = 0\) and \(y = 0\). Because of this, any convex combination of \(x\) and \(y\) has to be \(0\). Formally, \(\forall \hspace{1.5mm} \theta \in [0, 1]\),
+\begin{gather*}
+f(\theta x + (1 - \theta) y) = f(0) = 1 \\
+\theta f(x) + (1 - \theta) f(y) = \theta + 1 - \theta = 1
+\end{gather*}
+Since \(f(\theta x + (1 - \theta) y) = \theta f(x) + (1 - \theta) f(y)\), convexity holds.
+
+\subsubsection*{Case 2}
+Without loss of generality, let \(x > 0\) and \(y = 0\). \(\forall \hspace{1.5mm} \theta \in [0, 1]\),
+\begin{gather*}
+f(\theta x + (1 - \theta)y) = f(\theta x) = \begin{cases} 1 & \text{if} \theta = 0 \\ 0 & \text{otherwise} \end{cases} \\
+\theta f(x) + (1 - \theta) f(y) = (1 - \theta)
+\end{gather*}
+If \(\theta = 0\), then \[f(\theta x + (1 - \theta)y) = \theta f(x) + (1 - \theta) f(y)\] Else, \[f(\theta x + (1 - \theta)y) = 0 \leq \theta f(x) + (1 - \theta) f(y) = (1  - \theta)\] Convexity holds.
+
+\subsubsection*{Case 3}
+Let \(x > 0\) and \(y > 0\). Because of this, any convex combination of \(x\) and \(y\) has to be \(> 0\). Formally, \(\forall \hspace{1.5mm} \theta \in [0, 1]\),
+\begin{gather*}
+f(\theta x + (1 - \theta)y) = 0 \\
+\theta f(x) + (1 - \theta) f(y) = 0
+\end{gather*}
+Since \(f(\theta x + (1 - \theta) y) = \theta f(x) + (1 - \theta) f(y)\), convexity holds.
+
+Since in all cases, convexity held, the function is verified to be convex.
+
+Consider the task of finding the subgradients at \(x = 0\). By the definition of subgradients:
+\begin{gather*}
+f(y) \geq f(x) + g^{T}(y - x) \\
+f(y) \geq 1 + gy
+\end{gather*}
+
+Now if \(y = 0\), then \(g\) could be any number. Otherwise if \(y > 0\), then we get this condition: \(g \leq \frac{-1}{y}\). Note that \(g\) should hold for all \(y\). Hence for the smallest \(y\) close to \(0\), then set of subgradients may be an empty set, hence leading the intersection to be an empty set. Since the set of subgradients is empty, the subdifferentials at \(x = 0\) are empty, leading to conclude that \(f\) is not subdifferentiable at \(x = 0\).
+\end{flushleft}
+
+\section*{Question 4}
+\subsection*{Part a}
+\begin{flushleft}
+We know that if \(\nabla g\) is L-Lipschitz, then:
+\begin{equation}
+\label{grad-lips}
+\nabla^2 g(x) \preceq LI
+\end{equation}
+where \(I\) is the identity matrix of corresponding dimensions.
+\(\newline\)
+
+Hence by using a \(2^{nd}\) order Taylor series expansion of \(g\) around a given \(x\), we get:
+\begin{equation}
+\label{second-taylor}
+\displaystyle g(y) \approx g(x) + \nabla g(x)^{T}(y - x) + \frac{(y - x)^{T}\nabla^2 g(x) (y - x)}{2}
+\end{equation}
+Note that we have assumed that \(g\) is twice-differentiable. The proof breaks down if this is not taken into consideration.
+\(\newline\)
+
+Using \ref{grad-lips} in \ref{second-taylor}, we get:
+\begin{equation}
+\label{grad-lips-taylor}
+\displaystyle g(y) \leq g(x) + \nabla g(x)^{T}(y - x) + \frac{L}{2}||y - x||_{2}^{2}
+\end{equation}
+
+Since \(f(y) = g(y) + h(y)\), substituting \ref{grad-lips-taylor}:
+\begin{equation}
+\label{part-a}
+f(y) \leq g(x) + \nabla g(x)^{T}(y - x) + \frac{L}{2}||y - x||_{2}^{2} + h(y)
+\end{equation}
+\end{flushleft}
+
+\subsection*{Part b}
+\begin{flushleft}
+Let \(y = x^{+} = x - tG_{t}(x)\). Substituting this in \ref{part-a}, we get:
+\begin{equation}
+\label{update-subs}
+f(x^{+}) \leq g(x) + \nabla g(x)^{T}(-tG_{t}(x)) + \frac{Lt^{2}}{2}||G_{t}(x)||_{2}^{2} + h\left(x - tG_{t}(x)\right)
+\end{equation}
+
+Since \(t \leq \frac{1}{L}\), \(L \leq \frac{1}{t}\) and consequently \(\frac{Lt^2}{2} \leq \frac{t}{2}\). Substitute this is \ref{update-subs} to get:
+\begin{equation}
+\label{part-b}
+f(x^{+}) \leq g(x) - t\nabla g(x)^TG_{t}(x) + \frac{t}{2}||G_{t}(x)||_{2}^{2} + h\left(x - tG_{t}(x)\right)
+\end{equation}
+\end{flushleft}
+
+\subsection*{Part c}
+\begin{flushleft}
+We know that if \(z = \textbf{prox}_{h, t}(x)\), then:
+\begin{equation}
+\label{subgrad-optim}
+x - z \in \partial h(z) \implies x - \textbf{prox}_{h, t}(x) \in \partial h(\textbf{prox}_{h, t}(x))
+\end{equation}
+
+Substitute \(x \leftarrow x - t\nabla g(x)\) in \ref{subgrad-optim} to get:
+\begin{equation}
+\label{update-subgrad-optim}
+x - t\nabla g(x) - \textbf{prox}_{h, t}(x - t\nabla g(x)) \in \partial h(\textbf{prox}_{h, t}(x - t\nabla g(x)))
+\end{equation}
+
+Using the definition of \(\textbf{prox}_{h, t}(x - t\nabla g(x)) = x - tG_{t}(x)\) in \ref{update-subgrad-optim}, we get:
+\begin{equation}
+\label{part-c}
+x - t\nabla g(x) - x + tG_{t}(x) \in \partial h(x - tG_{t}(x)) \implies tG_{t}(x) - tg(x) \in \partial h(x - tG_{t}(x))
+% @TODO: Need to check this equation
+\end{equation}
+\end{flushleft}
+
+\subsection*{Part d}
+\begin{flushleft}
+Note that the required inequation has a \(f(z)\) in the RHS, indicating the presence of \(g(z)\) and \(h(z)\) in our steps.
+Using the definition of convexity of \(g\) and \(h\) we get:
+\begin{equation}
+\label{cvx-g}
+g(z) \geq g(x) + \nabla g(x)^{T}(z - x) \implies g(x) \leq g(z) - \nabla g(x)^{T}(z - x)
+\end{equation}
+\begin{equation}
+\label{cvx-h}
+h(z) \geq h(x) + s(x)^{T}(z - x) \implies h(x) \leq h(z) - s(x)^{T}(z - x)
+\end{equation}
+
+Substituting \(x \leftarrow x - tG_{t}(x)\) in \ref{cvx-h} and using the result in \ref{part-c}, we get:
+\begin{equation}
+\label{update-cvx-h}
+h(x - tG_{t}(x)) \leq h(z) - s(x - tG_{t}(x))^{T}(z - x) = h(z) - (G_{t}(x) - \nabla g(x))^{T}(z - x + tG_{t}(x))
+\end{equation}
+
+Using \ref{part-b} and the substituting the results from \ref{cvx-g} and \ref{update-cvx-h}:
+\begin{equation}
+\label{step-d1}
+f(x^{+}) \leq g(z) - \nabla g(x)^{T}(z - x) - t\nabla g(x)^{T}G_{t}(x) + \frac{t}{2}||G_{t}(x)||_{2}^{2} + h(z) - (G_{t}(x) - \nabla g(x))^{T}(z - x + tG_{t}(x))
+\end{equation}
+
+Performing the rearrangement: \[(G_{t}(x) - \nabla g(x))^{T}(z - x + tG_{t}(x)) = (G_{t}(x) - \nabla g(x))^{T}(z - x) + t||G_{t}(x)||_{2}^{2} - t\nabla g(x)^{T}G_{t}(x)\] and substituting in \ref{step-d1} we proceed to get:
+\begin{equation}
+\label{step-d2}
+f(x^{+}) \leq g(z) - (\nabla g(x) + G_{t}(x) - \nabla g(x))^{T}(z - x) - t\nabla g(x)^{T}G_{t}(x) + t\nabla g(x)^{T}G_{t}(x) - \frac{t}{2}||G_{t}(x)||_{2}^{2}
+\end{equation}
+
+Cancelling out the required terms in \ref{step-d2} and using the fact that \(f(z) = g(z) + h(z)\)
+\begin{equation}
+\label{part-d}
+f(x^{+}) \leq f(z) - G_{t}(x)^{T}(z - x) - \frac{t}{2}||G_{t}(x)||_{2}^{2} = f(z) + G_{t}(x)^{T}(x - z) - \frac{t}{2}||G_{t}(x)||_{2}^{2}
+\end{equation}
+
+\subsection*{Part e}
+We know that \(x^{+}\) is the updated after \(G_{t}(x)\) is applied to \(x\). Substituting \(z = x\) in \ref{part-d}, we can see that:
+\begin{equation}
+\label{guarantee}
+f(x^{+}) \leq f(x) - \frac{t}{2}||G_{t}(x)||_{2}^{2}
+\end{equation}
+
+Since \(||.||\) is positive, \ref{guarantee} guarantees a decrease in the function value after a step is made. Use the update rule \(x^{+} = x - tG_{t}(x)\) to get \(G_{t}(x) = \frac{x - x^{+}}{t}\). Substituting: \(z = x^{*}\) and the equation for \(G_{t}(x)\) in \ref{part-d}, we get:
+\begin{equation}
+\label{step-e1}
+f(x^{+}) \leq f(x^{*}) + \frac{1}{2t}\left((x - x^{+})^{T}(2x - 2x^{*}) - (x - x^{+})^{T}(x - x^{+})\right)
+\end{equation}
+
+Playing with the second term:
+\begin{gather*}
+2x - 2x^{*} - x + x^{+} = (x - x^{*}) - (x^{*} - x^{+}) \\
+\implies (x - x^{+})^{T}(2x - 2x^{*} - (x - x^{+})) = (x - x^{+})^{T}(x - x^{*}) - (x - x^{+})^{T}(x^{*} - x^{+})
+\end{gather*}
+
+Splitting each \(x - x^{+}\) as \((x - x^{*}) + (x^{*} - x^{+})\):
+\begin{gather*}
+(x - x^{+})^{T}(x - x^{*}) = ||x - x^{*}||_{2}^{2} + (x^{*} - x^{+})^{T}(x - x^{*}) \\
+(x - x^{+})^{T}(x^{*} - x^{+}) = (x - x^{*})^{T}(x^{*} - x^{+}) + ||x^{*} - x^{+}||_{2}^{2} \\
+\implies (x - x^{+})^{T}(x - x^{*}) - (x - x^{+})^{T}(x^{*} - x^{+}) = ||x - x^{*}||_{2}^{2} - ||x^{+} - x^{*}||_{2}^{2} \\
+\implies (x - x^{+})^{T}(2x - 2x^{*} - (x - x^{+})) = ||x - x^{*}||_{2}^{2} - ||x^{+} - x^{*}||_{2}^{2}
+\end{gather*}
+
+Substituting the final results back in \ref{step-e1}, we get:
+\begin{equation}
+\label{part-e}
+f(x^{+}) \leq f(x^{*}) + \frac{1}{2t}\left(||x - x^{*}||_{2}^{2} - ||x^{+} - x^{*}||_{2}^{2}\right)
+\end{equation}
+\end{flushleft}
+
+\subsection*{Part f}
+\begin{flushleft}
+We know from \ref{guarantee} that \(f(x^{(k)}) \leq f(x^{(k-1)})\). Substitute \(x^{+} \leftarrow x^{(k)}\) and \(x \leftarrow x^{(k-1)}\) in \ref{part-e}. We now get:
+\begin{equation}
+\label{step-f1}
+f(x^{(k)}) - f(x^{*}) \leq \frac{1}{2t}\left(||x^{(k-1)} - x^{*}||_{2}^{2} - ||x^{(k)} - x^{*}||_2^{2}\right)
+\end{equation}
+
+Perform a summation over \(k\) running from 1 to \(K\) on both sides of \ref{step-f1}, which yields us:
+\begin{equation}
+\label{step-f2}
+\displaystyle \sum_{k=1}^{K} f(x^{(k)}) - f(x^{*}) \leq \frac{1}{2t} \left(\sum_{k=1}^{K} ||x^{(k-1)} - x^{*}||_{2}^{2} - ||x^{(k)} - x^{*}||_2^{2}\right)
+\end{equation}
+
+The sum on the RHS of \ref{step-f2} is conveniently a telescoping sum.
+\begin{equation}
+\label{step-f3}
+\displaystyle \sum_{k=1}^{K} f(x^{(k)}) - f(x^{*}) \leq \frac{1}{2t} \left(||x^{0} - x^{*}||_{2}^{2} - ||x^{K} - x^{*}||_{2}^{2}\right)
+\end{equation}
+
+Since \(f(x^{(K)}) \leq f(x^{(K-1)}) \leq \ldots \leq f(x^{(1)})\), we can lower-bound the value \(f(x^{(k)}) - f(x^{*})\) by \(f(x^{(K)}) - f(x^{*})\). Also \(||x^{(0)} - x^{*}||_{2}^{2} - ||x^{(K)} - x^{*}||_{2}^{2} \leq ||x^{(0)} - x^{*}||_{2}^{2}\). Using these substitutions in \ref{step-f3}, we get:
+\begin{equation}
+\label{part-f}
+f(x^{(K)}) - f(x^{*}) \leq \frac{||x^{(0)} - x^{*}||_{2}^{2}}{2tK}
+\end{equation}
+\end{flushleft}
+\end{document}

@@ -8,3 +8,7 @@ Coursework pertaining to CS6230 : Optimization Methods in Machine Learning offer
 ### Programming Assignment - 1
 + Plotting special functions
 + Experimenting with Gradient Descent with different step size setting schemes
+
+### Assignment - 2
++ Subgradient calculus and properties
++ Proximal gradient descent based proofs
