@@ -1,4 +1,4 @@
-\documentclass[10.5pt]{article}
+\documentclass[11pt]{article}
 \usepackage[margin=1in]{geometry}
 \usepackage{amsmath}
 \usepackage{amssymb}
@@ -12,6 +12,61 @@ Optimization Methods in Machine Learning}
 
 \begin{document}
 \maketitle
+
+\section*{Question 1}
+\subsection*{Part a}
+\begin{flushleft}
+\begin{equation}
+\label{ques-1a}
+\displaystyle f(x) = \max_{i=1\ldots m} (a_{i}^{T}x + b_{i})
+\end{equation}
+
+Note that \ref{ques-1a} is of the form: \(\displaystyle f(x) = \max_{i=1\ldots m} f_{i}(x)\). The steps involved in finding the subgradient of \(f\) at a given point are as follows:
+
+\begin{enumerate}
+\item See if \(f_{i}\) is subdifferentiable \(\forall i \in \{1 \ldots m\}\).
+\item If there is no intersection, then the subdifferential of \(f\) is the subdifferential of the unique maximum.
+\item If there is intersection, then the subdifferential of \(f\) at the point of intersection of is the set of all convex combinations of the subdifferentials of the function intersecting at that point.
+\end{enumerate}
+
+The first bullet point is simple to check: \(\nabla f_{i}(x) = a_{i}\). The second and third bullet point can be combined to form the following: the active functions at a given point are the set of functions such that \(f(x) = f_{\text{active}}(x)\). Note that in the second point, this set is singleton, whereas in the third point, this set maybe as big as \(m\). Hence the subdifferential of \(f\) is given by:
+\begin{equation}
+\label{ans-1a}
+\partial f = \text{Conv}\left(\{\partial f_{i}(x) | f_{i}(x) = f(x) \text{ and } i \in \{1 \ldots m\}\}\right)
+\end{equation}
+
+where the \(\text{Conv}(S)\) in \ref{ans-1a} denotes the set of all convex combinations of the elements of \(S\)/convex hull of \(S\).
+\end{flushleft}
+
+\subsection*{Part b}
+\begin{flushleft}
+\begin{equation}
+\label{ques-1b}
+\displaystyle f(x) = \max_{i=1\ldots m} |a_{i}^{T}x + b_{i}|
+\end{equation}
+
+Note that \ref{ques-1b} takes the same form as \ref{ques-1a}. In fact, for \ref{ques-1b}, one can apply the results of \ref{ques-1a} twice. 
+The steps are as follows:
+\begin{enumerate}
+\item See if \(f_{i}\) is subdifferentiable \(\forall i \in \{1 \ldots m\}\).
+\item Get the subdifferential using the convex combination of the subdifferentials of every active function.
+\end{enumerate}
+
+For the first step, we know that \(\displaystyle f_{i} = \max \{-a_{i}^{T}x - b_{i}, a_{i}^Tx + b_{i}\}\). From the results of Question 1a and also the fact that there are more than one active functions at \(x = \mathbf{0}\), we can tell that:
+\begin{equation}
+\label{sub-ans-1b}
+\partial f_{i}(0) = \text{Conv}(-a_{i}, a_{i}) = \{a_{i} - 2\theta a_{i} | \theta \in [0, 1]\}
+\end{equation}
+
+Using \ref{sub-ans-1b}, we replicate the same statement from Question 1a, which is:
+\begin{equation}
+\label{ans-1b}
+\partial f = \text{Conv}\left(\{\partial f_{i}(x) | f_{i}(x) = f(x) \text{ and } i \in \{1 \ldots m\}\}\right)
+\end{equation}
+
+where the \(\text{Conv}(S)\) in \ref{sub-ans-1b} and \ref{ans-1b} denotes the set of all convex combinations of the elements of \(S\)/convex hull of \(S\).
+
+\end{flushleft}
 
 \section*{Question 2}
 \begin{flushleft}
