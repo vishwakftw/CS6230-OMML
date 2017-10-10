@@ -1,5 +1,5 @@
 \documentclass[11pt]{article}
-\usepackage[margin=1in]{geometry}
+\usepackage[margin=0.8in]{geometry}
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{bookmark}
@@ -148,6 +148,72 @@ f(y) \geq 1 + gy
 Now if \(y = 0\), then \(g\) could be any number. Otherwise if \(y > 0\), then we get this condition: \(g \leq \frac{-1}{y}\). Note that \(g\) should hold for all \(y\). Hence for the smallest \(y\) close to \(0\), then set of subgradients may be an empty set, hence leading the intersection to be an empty set. Since the set of subgradients is empty, the subdifferentials at \(x = 0\) are empty, leading to conclude that \(f\) is not subdifferentiable at \(x = 0\).
 \end{flushleft}
 
+\section*{Question 3}
+\subsection*{Part a}
+\begin{flushleft}
+Consider the SVD of \(W\) to be \(W = U_{W} \Sigma_{W} V^{T}_{W}\). From the conditions imposed on \(W\), we get: 
+
+Hence the SVD of \(UV^{T} + W\) can be given by:
+\begin{equation}
+\label{svd-uv-w}
+UV^{T} + W = U I V^{T} + U_{W} \Sigma_{W} V^{T}_{W} = \begin{bmatrix} U & U_{W} \end{bmatrix} \begin{bmatrix} I & 0 \\ 0 & \Sigma_{W} \end{bmatrix} \begin{bmatrix} V^{T} \\ V_{W}^{T} \end{bmatrix}
+\end{equation}
+
+This is a valid SVD because:
+\begin{equation*}
+U^{T}W = 0 \implies U^{T}U_{W}\Sigma_{W}V^{T}_{W} = 0 \implies U^{T}U_{W}\Sigma_{W}V^{T}_{W}V_{W} = 0 \implies U^{T}U_{W}\Sigma_{W} = 0 \implies U^{T}U_{W} = 0
+\end{equation*}
+
+Similarly it can be shown that \(VV_{W}^{T} = 0\) (by using \(WU = 0\) and pre-multiplying \(U^{T}_{W}\)). From these results, it can be shown that:
+\begin{gather*}
+\begin{bmatrix} U & U_{W} \end{bmatrix}^{T} \begin{bmatrix} U & U_{W} \end{bmatrix} = I_{2r} \\
+\begin{bmatrix} V & V_{W} \end{bmatrix}^{T} \begin{bmatrix} V & V_{W} \end{bmatrix} = I_{2r}
+\end{gather*}
+
+Since \(||W||_{\text{op}} \leq 1\), we can tell that the diagonal entries of \(\Sigma_{W}\) are \(\leq 1\). Hence the maximum diagonal element in the singular matrix for \(UV^{T} + W\) from \ref{svd-uv-w} is \(1\), which suggests that \(||UV^{T} + W||_{\text{op}} \leq 1\)
+\end{flushleft}
+
+\subsection*{Part b}
+\begin{flushleft}
+Using the SVD of \(A\), we have:
+\begin{equation}
+\label{uv-w-a-prod}
+(UV^{T} + W)^{T}A = (VU^{T} + W^{T})(U\Sigma V^{T}) = VU^{T}U\Sigma V^{T} + W^{T}U\Sigma V^{T} = V\Sigma V^{T}
+\end{equation}
+
+Now, using the properties of circularity of the trace and \ref{uv-w-a-prod}, we get:
+\begin{equation}
+\label{part-3b}
+\text{tr}((UV^{T} + W)^{T}A) = \text{tr}(V\Sigma V^{T}) = \text{tr}(V^{T}V\Sigma) = \text{tr}(\Sigma) = ||A||_{*}
+\end{equation}
+\end{flushleft}
+
+\subsection*{Part c}
+\begin{flushleft}
+We know that the dual norm of the operator norm is the trace norm. Hence by the definition of trace norm:
+\begin{equation}
+\label{trace-norm-dual}
+\displaystyle ||A||_{*} = \max_{||B||_{\text{op}} \leq 1} \text{tr}(B^{T} A)
+\end{equation}
+From the result in \ref{ans-1a}, \ref{trace-norm-dual} and \(\nabla_{A} \text{tr}(B^{T}A) = B\), we know how to obtain the subdifferential of \(||A||_{*}\). This happens to be:
+\begin{equation}
+\label{subdiff-trace}
+\displaystyle \partial ||A||_{*} = \text{Conv}\left(\{B \ni \text{tr}(B^{T}A) = ||A||_{*}, ||B||_{\text{op}} \leq 1\}\right)
+\end{equation}
+From the results in \ref{part-3b} and \ref{svd-uv-w}, we can see that \(UV^{T} + W\) for any \(W\) satisfying the same condition as the elements of \(\partial ||A||_{*}\). Hence we can conclude that:
+\begin{multline}
+\label{subset-rel}
+\text{Conv}\left(\{B \ni \text{tr}(B^{T}A) = ||A||_{*}, ||B||_{\text{op}} \leq 1\}\right) \\ \supseteq \{UV^{T} + W \ni ||W||_{\text{op}} \leq 1, U^{T}W = 0, WV = 0, \text{tr}((UV^{T} + W)^{T}A) = ||A||_{*}\}
+\end{multline}
+
+Using \ref{subset-rel} and \ref{subdiff-trace}, we get the final result:
+\begin{equation}
+\label{ans-3c}
+\displaystyle \partial ||A||_{*} \supseteq \{UV^{T} + W \ni ||W||_{\text{op}} \leq 1, U^{T}W = 0, WV = 0, \text{tr}((UV^{T} + W)^{T}A) = ||A||_{*} \}
+\end{equation}
+
+\end{flushleft}
+
 \section*{Question 4}
 \subsection*{Part a}
 \begin{flushleft}
@@ -197,22 +263,22 @@ f(x^{+}) \leq g(x) - t\nabla g(x)^TG_{t}(x) + \frac{t}{2}||G_{t}(x)||_{2}^{2} + 
 
 \subsection*{Part c}
 \begin{flushleft}
-We know that if \(z = \textbf{prox}_{h, t}(x)\), then:
+By subgradient optimality condition:
 \begin{equation}
 \label{subgrad-optim}
-x - z \in \partial h(z) \implies x - \textbf{prox}_{h, t}(x) \in \partial h(\textbf{prox}_{h, t}(x))
+0 \in \partial\left(\frac{||z-x||^2}{2t} + h(z)\right)  \implies \frac{x - z}{t} \in \partial h(z) \implies \frac{x - \textbf{prox}_{h, t}(x)}{t} \in \partial h(\textbf{prox}_{h, t}(x))
 \end{equation}
 
 Substitute \(x \leftarrow x - t\nabla g(x)\) in \ref{subgrad-optim} to get:
 \begin{equation}
 \label{update-subgrad-optim}
-x - t\nabla g(x) - \textbf{prox}_{h, t}(x - t\nabla g(x)) \in \partial h(\textbf{prox}_{h, t}(x - t\nabla g(x)))
+\frac{x - t\nabla g(x) - \textbf{prox}_{h, t}(x - t\nabla g(x))}{t} \in \partial h(\textbf{prox}_{h, t}(x - t\nabla g(x)))
 \end{equation}
 
 Using the definition of \(\textbf{prox}_{h, t}(x - t\nabla g(x)) = x - tG_{t}(x)\) in \ref{update-subgrad-optim}, we get:
 \begin{equation}
 \label{sub-part-c}
-x - t\nabla g(x) - x + tG_{t}(x) \in \partial h(x - tG_{t}(x)) \implies tG_{t}(x) - t\nabla g(x) \in \partial h(x - tG_{t}(x)) 
+\frac{x - t\nabla g(x) - x + tG_{t}(x)}{t} \in \partial h(x - tG_{t}(x)) \implies \frac{tG_{t}(x) - t\nabla g(x)}{t} \in \partial h(x - tG_{t}(x)) 
 \end{equation}
 
 Using \ref{sub-part-c}, we have:
