@@ -86,8 +86,7 @@ CS6230 - Optimization Methods in Machine Learning}
   \item<6->{
     Theoretical guarantees exist for \emph{convex} settings only.
     \begin{itemize}    
-        \item<7->{Work by Nesterov showed that we take \(O(1/\epsilon)\) iterations to converge to a first order stationary point using gradient descent} % add citations
-        \item<8->{\emph{Non-convex} problems have saddle-points to escape from too}
+        \item<7->{\emph{Non-convex} problems have saddle-points to escape from}
     \end{itemize}
   }
   \end{itemize}
@@ -108,7 +107,7 @@ CS6230 - Optimization Methods in Machine Learning}
   \end{itemize}
 \end{frame}
 
-\section{Definitions}
+\section{Notations, Definitions and Preliminaries}
 \begin{frame}{Special Notations}
 \begin{itemize}
 \item<1->{\(\g F(\xbold)\) is the gradient of \(F\) at \(\xbold\)}
@@ -120,14 +119,15 @@ CS6230 - Optimization Methods in Machine Learning}
 
 \begin{frame}{Definitions}
 \begin{alertblock}{\((\epsilon_{g}, \epsilon_{h})\)-Optimality}
+\label{sec-opt}
 Given \(\epsilon_{g}, \epsilon_{h} \in (0, 1)\), \(\mathbf{\hat{x}}\) is an \((\epsilon_{g}, \epsilon_{h})\)-optimal solution to the problem \ref{main-obj}, if:
 \begin{itemize}
 \item \(||\g F(\mathbf{\hat{x}}) || \leq \epsilon_{g}\)
-\item \(\lambda_{\min} (\h F(\mathbf{\hat{x}})) \leq \epsilon_{h}\)
+\item \(\lambda_{\min} (\h F(\mathbf{\hat{x}})) \geq -\epsilon_{h}\)
 \end{itemize}
 \end{alertblock}
 \pause
-Note: If the function \(F\) satisfies strict saddle property, then the above defined optimality condition ensures ``closeness'' to a local-minimum. % add citations
+Note: If the function \(F\) satisfies \underline{strict saddle property}, then the above defined optimality condition ensures ``closeness'' to a local-minimum. % add citations
 \pause
 \begin{alertblock}{Lipschitz and Bounded Hessian (Hessian Regularity)}
 Given \(\xbold_{t}\) and \(\mathbf{s}_{t}\) the \(t^{th}\) iterate and \(t^{th}\) update step:
@@ -136,5 +136,62 @@ Given \(\xbold_{t}\) and \(\mathbf{s}_{t}\) the \(t^{th}\) iterate and \(t^{th}\
 \item \(||\h F(\xbold_{t}) || \leq B\)
 \end{itemize}
 \end{alertblock}
+\end{frame}
+
+\subsection{Preliminaries}
+\begin{frame}{Trust Region Methods}
+\begin{itemize}
+\item<1->{Method used to optimize over \emph{non-convex} functions, proven to be extremely useful at or near saddle points, by leveraging the negative curvature around that point}
+\item<2->{Helps achieve two things:
+  \begin{itemize}
+    \item<3->Finds optimal direction to move in
+    \item<4->Finds optimal distance to move in the determined direction
+  \end{itemize}
+  }
+\item<5->{Mathematically: if \(\mathbf{s}_{t}\) is the update to be made i.e., \(\xbold_{t+1} - \xbold_{t} = \mathbf{s}_{t}\), then
+\begin{equation}
+\label{TR}
+\mathbf{s}_{t} = \text{arg}\min_{\mathbf{s}} \frac{1}{2}\mathbf{s}^{T} \h F(\xbold_{t}) \mathbf{s} + \mathbf{s}^{T} \g F(\xbold_{t}) \hspace{5mm}\ni ||\mathbf{s}||_{2} \leq \Delta_{t}
+\end{equation} % add citation
+}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Trust Region Methods: Theoretical Guarantees}
+\begin{itemize}
+\item<1->{Solve a minimization problem which is a constrained quadratic problem}
+\item<2->{Similarities to other eigenvalue problems, leading to special methods drawing inferences from existing methods e.g., truncated conjugate gradient methods, Lanczos trust-region based methods}
+\item<3->{To reach an \((\epsilon_{g}, \epsilon_{h})\)-optimal point as defined earlier, we need \(O\left(\max\{\epsilon_{h}^{-1}\epsilon_{g}^{-2}, \epsilon_{h}^{-3}\}\right)\)} %add citation
+\item<4->{To reach an \((\epsilon_{g}, \epsilon_{h})\)-optimal point, we need \(O\left(\max\{\epsilon_{g}^{-3}, \epsilon_{h}^{-3}\}\right)\)} %add citation
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Cubic Regularization Methods}
+\begin{itemize}
+\item<1->{Method used to optimize over \emph{non-convex} functions, just as done by trust region methods.}
+\item<2->{Provides the same benefits provided by trust region methods
+  \begin{itemize}
+    \item<3->Finds optimal direction to move in
+    \item<4->Finds optimal distance to move in the determined direction
+  \end{itemize}
+  }
+\item<5->{Mathematically: if \(\mathbf{s}_{t}\) is the update to be made i.e., \(\xbold_{t+1} - \xbold_{t} = \mathbf{s}_{t}\), then
+\begin{equation}
+\label{CR}
+\mathbf{s}_{t} = \text{arg}\min_{\mathbf{s}} \frac{1}{2}\mathbf{s}^{T} \h F(\xbold_{t}) \mathbf{s} + \mathbf{s}^{T} \g F(\xbold_{t}) + \frac{\sigma_{t}}{3}||\mathbf{s}||^3
+\end{equation} % add citation
+}
+\item<6->{Notice familiarity?}
+\item<7->{What is different?}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Cubic Regularization Methods: Theoretical Guarantess}
+\begin{itemize}
+\item<1->{Solve a minimization problem which is an unconstrained quadratic problem, as opposed to constrained objective in \ref{TR}}
+\item<2->{Methods to solve this include Lanczos type iterations, fast approximate matrix inversion}
+\item<3->{To reach an \((\epsilon_{g}, \epsilon_{h})\)-optimal point as defined earlier, we need \(O\left(\max\{\epsilon_{g}^{-2}, \epsilon_{h}^{-3}\}\right)\)} %add citation
+\item<4->{Assuming more tight conditions helps improve the dependence on \(\epsilon_{g}\) - we need \(O\left(\max\{\epsilon_{g}^{-3/2}, \epsilon_{h}^{-3}\}\right)\)} %add citation
+\end{itemize}
 \end{frame}
 \end{document}
