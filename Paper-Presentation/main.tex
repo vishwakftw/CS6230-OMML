@@ -6,6 +6,9 @@
 \newcommand{\h}{\nabla^{2}}
 \newcommand{\g}{\nabla}
 \newcommand{\xbold}{\mathbf{x}}
+\newcommand{\sbold}{\mathbf{s}}
+\newcommand{\mineig}{\lambda_{\min}}
+\newcommand{\maxeig}{\lambda_{\max}}
 %\documentclass{article}
 %\usepackage{beamerarticle}
 \usetheme{CambridgeUS}
@@ -73,7 +76,7 @@ CS6230 - Optimization Methods in Machine Learning}
   \item<1->{
     Performance of first order methods can be seriously hindered by ill-conditioning.
     \begin{itemize}    
-        \item<2->{Condition number: \(\kappa = \frac{L}{\gamma} = \frac{\lambda_{\max}(\h F)}{\lambda_{\min}(\h F)}\), where \(L\) is smoothness parameter, \(\gamma\) is strong convexity parameter}
+        \item<2->{Condition number: \(\kappa = \frac{L}{\gamma} = \frac{\maxeig(\h F)}{\mineig(\h F)}\), where \(L\) is smoothness parameter, \(\gamma\) is strong convexity parameter}
         \item<3->{Convergence criteria for gradient descent relies on \(\kappa\)} %add citations
     \end{itemize}
   }
@@ -123,17 +126,17 @@ CS6230 - Optimization Methods in Machine Learning}
 Given \(\epsilon_{g}, \epsilon_{h} \in (0, 1)\), \(\mathbf{\hat{x}}\) is an \((\epsilon_{g}, \epsilon_{h})\)-optimal solution to the problem \ref{main-obj}, if:
 \begin{itemize}
 \item \(||\g F(\mathbf{\hat{x}}) || \leq \epsilon_{g}\)
-\item \(\lambda_{\min} (\h F(\mathbf{\hat{x}})) \geq -\epsilon_{h}\)
+\item \(\mineig (\h F(\mathbf{\hat{x}})) \geq -\epsilon_{h}\)
 \end{itemize}
 \end{alertblock}
 \pause
 Note: If the function \(F\) satisfies \underline{strict saddle property}, then the above defined optimality condition ensures ``closeness'' to a local-minimum. % add citations
 \pause
 \begin{alertblock}{Lipschitz and Bounded Hessian (Hessian Regularity)}
-Given \(\xbold_{t}\) and \(\mathbf{s}_{t}\) the \(t^{th}\) iterate and \(t^{th}\) update step:
+Given \(\xbold_{t}\) and \(\sbold_{t}\) the \(t^{th}\) iterate and \(t^{th}\) update step respectively:
 \begin{itemize}
-\item \(||\h F(\xbold) - \h F(\xbold_{t})|| \leq L||\xbold - \xbold_{t}|| \hspace{4mm} \forall \xbold \in [\xbold_{t}, \xbold_{t} + \mathbf{s}_{t}]\)
-\item \(||\h F(\xbold_{t}) || \leq B\)
+\item \(||\h F(\xbold) - \h F(\xbold_{t})|| \leq L||\xbold - \xbold_{t}|| \hspace{4mm} \forall \xbold \in [\xbold_{t}, \xbold_{t} + \sbold_{t}]\)
+\item \(||\h F(\xbold_{t}) || \leq B, \hspace{4mm} B < \infty\)
 \end{itemize}
 \end{alertblock}
 \end{frame}
@@ -148,10 +151,10 @@ Given \(\xbold_{t}\) and \(\mathbf{s}_{t}\) the \(t^{th}\) iterate and \(t^{th}\
     \item<4->Finds optimal distance to move in the determined direction
   \end{itemize}
   }
-\item<5->{Mathematically: if \(\mathbf{s}_{t}\) is the update to be made i.e., \(\xbold_{t+1} - \xbold_{t} = \mathbf{s}_{t}\), then
+\item<5->{Mathematically: if \(\sbold_{t}\) is the update to be made i.e., \(\xbold_{t+1} - \xbold_{t} = \sbold_{t}\), then
 \begin{equation}
 \label{TR}
-\mathbf{s}_{t} = \text{arg}\min_{\mathbf{s}} \frac{1}{2}\mathbf{s}^{T} \h F(\xbold_{t}) \mathbf{s} + \mathbf{s}^{T} \g F(\xbold_{t}) \hspace{5mm}\ni ||\mathbf{s}||_{2} \leq \Delta_{t}
+\sbold_{t} = \text{arg}\min_{\sbold} \frac{1}{2}\sbold^{T} \h F(\xbold_{t}) \sbold + \sbold^{T} \g F(\xbold_{t}) \hspace{5mm}\ni ||\sbold||_{2} \leq \Delta_{t}
 \end{equation} % add citation
 }
 \end{itemize}
@@ -175,10 +178,10 @@ Given \(\xbold_{t}\) and \(\mathbf{s}_{t}\) the \(t^{th}\) iterate and \(t^{th}\
     \item<4->Finds optimal distance to move in the determined direction
   \end{itemize}
   }
-\item<5->{Mathematically: if \(\mathbf{s}_{t}\) is the update to be made i.e., \(\xbold_{t+1} - \xbold_{t} = \mathbf{s}_{t}\), then
+\item<5->{Mathematically: if \(\sbold_{t}\) is the update to be made i.e., \(\xbold_{t+1} - \xbold_{t} = \sbold_{t}\), then
 \begin{equation}
 \label{CR}
-\mathbf{s}_{t} = \text{arg}\min_{\mathbf{s}} \frac{1}{2}\mathbf{s}^{T} \h F(\xbold_{t}) \mathbf{s} + \mathbf{s}^{T} \g F(\xbold_{t}) + \frac{\sigma_{t}}{3}||\mathbf{s}||^3
+\sbold_{t} = \text{arg}\min_{\sbold} \frac{1}{2}\sbold^{T} \h F(\xbold_{t}) \sbold + \sbold^{T} \g F(\xbold_{t}) + \frac{\sigma_{t}}{3}||\sbold||^3
 \end{equation} % add citation
 }
 \item<6->{Notice familiarity?}
@@ -192,6 +195,90 @@ Given \(\xbold_{t}\) and \(\mathbf{s}_{t}\) the \(t^{th}\) iterate and \(t^{th}\
 \item<2->{Methods to solve this include Lanczos type iterations, fast approximate matrix inversion}
 \item<3->{To reach an \((\epsilon_{g}, \epsilon_{h})\)-optimal point as defined earlier, we need \(O\left(\max\{\epsilon_{g}^{-2}, \epsilon_{h}^{-3}\}\right)\)} %add citation
 \item<4->{Assuming more tight conditions helps improve the dependence on \(\epsilon_{g}\) - we need \(O\left(\max\{\epsilon_{g}^{-3/2}, \epsilon_{h}^{-3}\}\right)\)} %add citation
+\end{itemize}
+\end{frame}
+
+\section{Algorithms and associated convergence analysis}
+\begin{frame}{Conditions on the Inexact Hessian}
+\begin{alertblock}{Inexact Hessian Regularity}
+Given \(\xbold_{t}\) and \(\sbold_{t}\) the \(t^{th}\) iterate and \(t^{th}\) update step respectively:
+\begin{itemize}
+\item \(||\left(H(\xbold_{t}) - \h F(\xbold_{t})\right)\sbold_{t}|| \leq \epsilon||\sbold_{t}||, \hspace{4mm} \epsilon \in (0,1)\)
+\item \(||H(\xbold_{t}) || \leq B_{H}\)
+\end{itemize}
+\end{alertblock}
+\pause
+\begin{alertblock}{Sufficient Descent Condition-1}
+Assume that we solve \ref{TR} approximately to find \(\sbold_{t}\) such that:
+\begin{itemize}
+\item \(-m_{t}(\sbold_{t}) \geq -m_{t}(\sbold_{t}^{C}) \geq \min\lbrace\Phi_{1}(\g F(\xbold_{t}), H_{t}), \Psi_{1}(\g F(\xbold_{t}), \Delta_{t})\rbrace \)
+\item \(-m_{t}(\sbold_{t}) \geq -m_{t}(\sbold_{t}^{E}) \geq \frac{1}{2}\nu|\mineig(H_{t})|\Delta_{t}^{2}, \text{ if } \mineig(H_{t}) < 0 \)
+\end{itemize}
+where \(\sbold_{t}^{C}\) is a Cauchy point, along the negative gradient direction and \(\sbold_{t}^{E}\) is along negative curvature direction such that \((\sbold_{t}^{E})^{T} H_{t} \sbold_{t}^{E} \leq \nu\mineig(H_{t})||\sbold_{t}^{E}||^{2} < 0\) for some \(\nu \in (0, 1]\).
+\end{alertblock}
+\end{frame}
+
+\begin{frame}{Algorithm for Trust Region method}
+\begin{columns}
+\column{0.45\textwidth}
+\centering
+\includegraphics[width=0.9\textwidth]{./images/algo-1.png}
+\column{0.55\textwidth}
+\begin{theorem}
+Consider any \(0 < \epsilon_{g}, \epsilon_{h} < 1\). Suppose
+\begin{itemize}
+\item<1->{\(H(\xbold)\) satisfies Inexact Hessian Regularity with \(\epsilon < (1 - \eta)\nu\epsilon_{h}\)}
+\item<2->{\(\h F(\xbold)\) satisfies Hessian regularity}
+\item<3->{if the approximate solution to \ref{TR} satisfies Sufficient Descent Condition-1}, 
+\uncover<4->{then the algorithm terminates in at most \(T = O\left(\max\{\epsilon_{h}^{-1}\epsilon_{g}^{-2}, \epsilon_{h}^{-3}\}\right)\) iterations}
+\end{itemize}
+\end{theorem}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Conditions on the Inexact Hessian}
+\begin{alertblock}{Sufficient Descent Condition-2}
+Assume that we solve \ref{CR} approximately to find \(\sbold_{t}\) such that:
+\begin{itemize}
+\item \(-m_{t}(\sbold_{t}) \geq -m_{t}(\sbold_{t}^{C}) \geq \max\lbrace\Phi_{2}(\sigma_{t}, \sbold_{t}, B_{H}, \g F(\xbold_{t})), \Psi_{2}(\sigma_{t}, B_{H}, \g F(\xbold_{t}))\rbrace\)
+\item \(-m_{t}(\sbold_{t}) \geq -m_{t}(\sbold_{t}^{C}) \geq \frac{\nu|\mineig(H_{t})|}{6} \max\lbrace ||\sbold_{t}^{E}||^{2}, \frac{\nu^{2}|\mineig(H_{t})|^{2}}{\sigma_{t}^{2}}\rbrace \text{ if } \mineig(H_{t}) < 0\)
+\end{itemize}
+\(\sbold_{t}^{C}\) is a Cauchy point, along the negative gradient direction and \(\sbold_{t}^{E}\) is along negative curvature direction such that \((\sbold_{t}^{E})^{T} H_{t} \sbold_{t}^{E} \leq \nu\mineig(H_{t})||\sbold_{t}^{E}||^{2} < 0\) for some \(\nu \in (0, 1]\).
+\end{alertblock}
+\pause
+\begin{alertblock}{Sufficient Descent for Optimal Complexity}
+Assume that we solve \ref{CR} approximately to find \(\sbold_{t}\) such that:
+\[||\nabla m_{t}(\sbold_{t})|| \leq \theta_{t}||\g F(\xbold_{t})||, \hspace{4mm} \text{ where }\theta_{t} = \zeta\min\{1, ||\sbold_{t}||\} \text{ and } \zeta \in (0, 1) \]
+\end{alertblock}
+\end{frame}
+
+\begin{frame}{Algorithm for Cubic Regularization method}
+\begin{columns}
+\column{0.45\textwidth}
+\centering
+\includegraphics[width=0.9\textwidth]{./images/algo-2.png}
+\column{0.55\textwidth}
+\begin{theorem}
+Consider any \(0 < \epsilon_{g}, \epsilon_{h} < 1\). Suppose
+\begin{itemize}
+\item<1->{\(H(\xbold)\) satisfies Inexact Hessian Regularity with \(\epsilon = \min\{\epsilon_{0}, \zeta \epsilon_{g}\}, \zeta \in (0, 0.5)\)}
+\item<2->{\(\h F(\xbold)\) satisfies Hessian regularity}
+\item<3->{if the approximate solution to \ref{CR} satisfies Sufficient Descent Condition-2 and Sufficient Descent for Optimal Complexity}, 
+\uncover<4->{then the algorithm terminates in at most \(T = O\left(\max\{\epsilon_{g}^{-3/2}, \epsilon_{h}^{-3}\}\right)\) iterations}
+\end{itemize}
+\end{theorem}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Characteristics of Inexact Hessian in these methods}
+\begin{itemize}
+\item<1->{Same convergence rates with actual Hessians}
+\item<2->{Both the methods - trust region and cubic regularization, at termination satisfy
+  \begin{equation*}
+  ||\g F(\xbold_{T})|| \leq \epsilon_{g} \hspace{4mm} \text{ and } \hspace{4mm} \mineig(\h F(\xbold_{T})) \geq -(\epsilon_{h} + \epsilon)
+  \end{equation*}
+  \uncover<3->{in terms of the optimal point definition, these are \((\epsilon_{g}, \epsilon_{h} + \epsilon)\)-optimal points}
+} 
 \end{itemize}
 \end{frame}
 \end{document}
