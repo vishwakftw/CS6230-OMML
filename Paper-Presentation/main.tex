@@ -281,4 +281,38 @@ Consider any \(0 < \epsilon_{g}, \epsilon_{h} < 1\). Suppose
 } 
 \end{itemize}
 \end{frame}
+
+\section{Finite-Sum Minimization}
+\begin{frame}{Randomized Sub-sampling}
+\begin{itemize}
+\item<1->{Consider a modified unconstrained optimization problem
+  \begin{equation}
+    \min_{\xbold \in \mathbb{R}^{d}} F(\xbold) \triangleq \frac{1}{n}\displaystyle \sum_{i=1}^{n} f_{i}(\xbold)
+  \end{equation}
+where each \(f_{i}\) is smooth, but possibly non-convex.}
+\item<2->{Seen in Machine Learning problems, where each \(f_{i}\) corresponds to the loss or mis-fit due to the \(i^{th}\) sample in the mini-batch/batch}
+\item<3->{Large-scale problems have \(n, d >> 1\).}
+\item<4->{Consider a probability distribution over \({1, 2, \ldots, n}\), denoted by \(\mathbf{p} = \{p_{i}\}_{i=1}^{n}\) and \(Pr(X = i) = p_{i} > 0, \hspace{2mm} \sum p_{i} = 1\). Based on \(\mathbf{p}\), we pick a sample \(\mathcal{S}\).}
+\item<5->{Define the sub-sampled Hessian to be:
+  \begin{equation}
+    H(\xbold) \triangleq \frac{1}{n|\mathcal{S}|}\sum_{j \in \mathcal{S}} \frac{1}{p_{j}} \h f_{j}(\xbold)
+  \end{equation}
+}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Randomized Sub-Sampling}
+\begin{theorem}
+Consider \(\displaystyle \sup_{\xbold\in\mathbb{R}^{d}} ||\h f_{i}(\xbold)|| \leq K_{i}, \hspace{2mm} \forall i \in \{1, 2, \ldots, n\}\). Let \(\displaystyle K_{\max} = \max_{i=1,\ldots, n} K_{i}\) and \(\hat{K} = \frac{1}{n} \displaystyle \sum_{i=1}^{n} K_{i}\). If \(p_{i} = \frac{1}{n} \hspace{1mm} \forall i \in \{1, 2, \ldots, n\}\), and \(|\mathcal{S}| \geq \frac{16K^{2}_{max}}{\epsilon^{2}}\log\frac{2d}{\delta} \), then with probability at least \(1 - \delta\), we have:
+\begin{equation}
+Pr\left(||H(\xbold) - \h F(\xbold)|| \leq \epsilon\right) \geq 1 - \delta
+\end{equation}
+\end{theorem}
+\pause
+\uncover<2->{Two major implications:}
+\begin{itemize}
+\item<3->{Higher the value of \(d\), more larger sample set is required. But this dependence is logarithmic.}
+\item<4->{Higher the number of samples, lower the value of \(\epsilon\), in turn better ``inexact'' Hessian.}
+\end{itemize}
+\end{frame}
 \end{document}
