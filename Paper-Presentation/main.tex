@@ -78,19 +78,19 @@ CS6230 - Optimization Methods in Machine Learning}
     Performance of first order methods can be seriously hindered by ill-conditioning.
     \begin{itemize}    
         \item<2->{Condition number: \(\kappa = \frac{L}{\gamma} = \frac{\maxeig(\h F)}{\mineig(\h F)}\), where \(L\) is smoothness parameter, \(\gamma\) is strong convexity parameter}
-        \item<3->{Convergence criteria for gradient descent relies on \(\kappa\) \cite{benrecht-simons}}
+        \item<3->{Convergence criteria for gradient descent relies on \(\kappa\) (\cite{benrecht-simons})}
     \end{itemize}
   }
   \item<4->{
     First order methods involve fine-tuning hyperparameters.
     \begin{itemize}    
-        \item<5->{For gradient descent, we have 1 (learning rate) and for Adam \cite{adam-iclr} we have 4 (learning rate, tolerance, \(\beta_{1}\) and \(\beta_{2}\))}
+        \item<5->{For gradient descent, we have 1 (learning rate) and for Adam (\cite{adam-iclr}) we have 4 (learning rate, tolerance, \(\beta_{1}\) and \(\beta_{2}\))}
     \end{itemize}
   }
   \item<6->{
     Theoretical guarantees exist for \emph{convex} settings only.
     \begin{itemize}    
-        \item<7->{\emph{Non-convex} problems have saddle-points to escape from \cite{du-nips}, \cite{jin-icml}}
+        \item<7->{\emph{Non-convex} problems have saddle-points to escape from (\cite{du-nips}, \cite{jin-icml})}
     \end{itemize}
   }
   \end{itemize}
@@ -131,7 +131,7 @@ Given \(\eg, \eh \in (0, 1)\), \(\mathbf{\hat{x}}\) is an \((\eg, \eh)\)-optimal
 \end{itemize}
 \end{alertblock}
 \pause
-Note: If the function \(F\) satisfies \underline{strict saddle property} \cite{ge-colt}, then the above defined optimality condition ensures ``closeness'' to a local-minimum.
+Note: If the function \(F\) satisfies \underline{strict saddle property} (\cite{ge-colt}), then the above defined optimality condition ensures ``closeness'' to a local-minimum.
 \pause
 \begin{alertblock}{Lipschitz and Bounded Hessian (Hessian Regularity)}
 Given \(\xbold_{t}\) and \(\sbold_{t}\) the \(t^{th}\) iterate and \(t^{th}\) update step respectively:
@@ -145,7 +145,7 @@ Given \(\xbold_{t}\) and \(\sbold_{t}\) the \(t^{th}\) iterate and \(t^{th}\) up
 \subsection{Preliminaries}
 \begin{frame}{Trust Region Methods}
 \begin{itemize}
-\item<1->{Method used to optimize over \emph{non-convex} functions, proven to be extremely useful at or near saddle points, by leveraging the negative curvature around that point \cite{conn-siam}, \cite{sorensen-siam}}
+\item<1->{Method used to optimize over \emph{non-convex} functions, proven to be extremely useful at or near saddle points, by leveraging the negative curvature around that point (\cite{conn-siam}, \cite{sorensen-siam})}
 \item<2->{Helps achieve two things:
   \begin{itemize}
     \item<3->Finds optimal direction to move in
@@ -165,8 +165,8 @@ Given \(\xbold_{t}\) and \(\sbold_{t}\) the \(t^{th}\) iterate and \(t^{th}\) up
 \begin{itemize}
 \item<1->{Solve a minimization problem which is a constrained quadratic problem}
 \item<2->{Similarities to other eigenvalue problems, leading to special methods drawing inferences from existing methods e.g., truncated conjugate gradient methods, Lanczos trust-region based methods}
-\item<3->{To reach an \((\eg, \eh)\)-optimal point as defined earlier, we need \(O\left(\max\{\eh^{-1}\eg^{-2}, \eh^{-3}\}\right)\) \cite{cartis-joc}} 
-\item<4->{To reach an \((\eg, \eh)\)-optimal point, we need \(O\left(\max\{\eg^{-3}, \eh^{-3}\}\right)\) \cite{geovani-oms}}
+\item<3->{To reach an \((\eg, \eh)\)-optimal point as defined earlier, we need \(O\left(\max\{\eh^{-1}\eg^{-2}, \eh^{-3}\}\right)\) (\cite{cartis-joc})} 
+\item<4->{To reach an \((\eg, \eh)\)-optimal point, we need \(O\left(\max\{\eg^{-3}, \eh^{-3}\}\right)\) (\cite{geovani-oms})}
 \end{itemize}
 \end{frame}
 
@@ -194,8 +194,8 @@ Given \(\xbold_{t}\) and \(\sbold_{t}\) the \(t^{th}\) iterate and \(t^{th}\) up
 \begin{itemize}
 \item<1->{Solve a minimization problem which is an unconstrained quadratic problem, as opposed to constrained objective in \ref{TR}}
 \item<2->{Methods to solve this include Lanczos type iterations, fast approximate matrix inversion}
-\item<3->{To reach an \((\eg, \eh)\)-optimal point as defined earlier, we need \(O\left(\max\{\eg^{-2}, \eh^{-3}\}\right)\) \cite{cartis-joc}}
-\item<4->{Assuming more tight conditions helps improve the dependence on \(\eg\) - we need \(O\left(\max\{\eg^{-3/2}, \eh^{-3}\}\right)\) \cite{cartis-siam}} 
+\item<3->{To reach an \((\eg, \eh)\)-optimal point as defined earlier, we need \(O\left(\max\{\eg^{-2}, \eh^{-3}\}\right)\) (\cite{cartis-joc})}
+\item<4->{Assuming more tight conditions helps improve the dependence on \(\eg\) - we need \(O\left(\max\{\eg^{-3/2}, \eh^{-3}\}\right)\) (\cite{cartis-siam})}
 \end{itemize}
 \end{frame}
 
@@ -205,7 +205,7 @@ Given \(\xbold_{t}\) and \(\sbold_{t}\) the \(t^{th}\) iterate and \(t^{th}\) up
 Given \(\xbold_{t}\) and \(\sbold_{t}\) the \(t^{th}\) iterate and \(t^{th}\) update step respectively:
 \begin{itemize}
 \item \(||\left(H(\xbold_{t}) - \h F(\xbold_{t})\right)\sbold_{t}|| \leq \epsilon||\sbold_{t}||, \hspace{4mm} \epsilon \in (0,1)\)
-\item \(||H(\xbold_{t}) || \leq B_{H}\)
+\item \(||H(\xbold_{t}) || \leq B_{H}, \hspace{4mm} B_{H} < \infty\)
 \end{itemize}
 \end{alertblock}
 \pause
@@ -294,7 +294,7 @@ Consider any \(0 < \eg, \eh < 1\). Suppose
 where each \(f_{i}\) is smooth, but possibly non-convex.}
 \item<2->{Seen in Machine Learning problems, where each \(f_{i}\) corresponds to the loss or mis-fit due to the \(i^{th}\) sample in the mini-batch/batch}
 \item<3->{Large-scale problems have \(n, d >> 1\).}
-\item<4->{Consider a probability distribution over \({1, 2, \ldots, n}\), denoted by \(\mathbf{p} = \{p_{i}\}_{i=1}^{n}\) and \(Pr(X = i) = p_{i} > 0, \hspace{2mm} \sum p_{i} = 1\). Based on \(\mathbf{p}\), we pick a sample \(\mathcal{S}\).}
+\item<4->{Consider a probability distribution over \(\{1, 2, \ldots, n\}\), denoted by \(\mathbf{p} = \{p_{i}\}_{i=1}^{n}\) and \(Pr(X = i) = p_{i} > 0, \hspace{2mm} \sum p_{i} = 1\). Based on \(\mathbf{p}\), we pick a sample \(\mathcal{S}\).}
 \item<5->{Define the sub-sampled Hessian to be:
   \begin{equation}
     H(\xbold) \triangleq \frac{1}{n|\mathcal{S}|}\sum_{j \in \mathcal{S}} \frac{1}{p_{j}} \h f_{j}(\xbold)
@@ -356,7 +356,7 @@ Pr\left(||H(\xbold) - \h F(\xbold)|| \leq \epsilon\right) \geq 1 - \delta
     \item<5->{Proves helpful if distribution of \(K_{i}'s\) is skewed i.e., \(\hat{K} << K_{\max}\)}
   \end{itemize}
 }
-\item<3->{Choice of samples depend on the amount of curvature \(f_{i}''(\mathbf{a}_{i}^{T}\xbold)\), higher curvature \(\implies\) higher probability of being sampled.}
+\item<6->{Choice of samples depend on the amount of curvature \(f_{i}''(\mathbf{a}_{i}^{T}\xbold)\), higher curvature \(\implies\) higher probability of being sampled.}
 \end{itemize}
 \end{frame}
 
