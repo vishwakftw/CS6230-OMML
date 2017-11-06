@@ -9,6 +9,8 @@
 \newcommand{\sbold}{\mathbf{s}}
 \newcommand{\mineig}{\lambda_{\min}}
 \newcommand{\maxeig}{\lambda_{\max}}
+\newcommand{\eg}{\epsilon_{g}}
+\newcommand{\eh}{\epsilon_{h}}
 %\documentclass{article}
 %\usepackage{beamerarticle}
 \usetheme{CambridgeUS}
@@ -19,7 +21,6 @@ CS6230 - Optimization Methods in Machine Learning}
 
 \author{Vishwak Srinivasan \and Ayushi Patel}
 
-% Let's get started
 \begin{document}
 
 \begin{frame}
@@ -77,19 +78,19 @@ CS6230 - Optimization Methods in Machine Learning}
     Performance of first order methods can be seriously hindered by ill-conditioning.
     \begin{itemize}    
         \item<2->{Condition number: \(\kappa = \frac{L}{\gamma} = \frac{\maxeig(\h F)}{\mineig(\h F)}\), where \(L\) is smoothness parameter, \(\gamma\) is strong convexity parameter}
-        \item<3->{Convergence criteria for gradient descent relies on \(\kappa\)} %add citations
+        \item<3->{Convergence criteria for gradient descent relies on \(\kappa\) \cite{benrecht-simons}}
     \end{itemize}
   }
   \item<4->{
     First order methods involve fine-tuning hyperparameters.
     \begin{itemize}    
-        \item<5->{For gradient descent, we have 1 (learning rate) and for Adam we have 4 (learning rate, tolerance, \(\beta_{1}\) and \(\beta_{2}\))}
+        \item<5->{For gradient descent, we have 1 (learning rate) and for Adam \cite{adam-iclr} we have 4 (learning rate, tolerance, \(\beta_{1}\) and \(\beta_{2}\))}
     \end{itemize}
   }
   \item<6->{
     Theoretical guarantees exist for \emph{convex} settings only.
     \begin{itemize}    
-        \item<7->{\emph{Non-convex} problems have saddle-points to escape from}
+        \item<7->{\emph{Non-convex} problems have saddle-points to escape from \cite{du-nips}, \cite{jin-icml}}
     \end{itemize}
   }
   \end{itemize}
@@ -106,7 +107,7 @@ CS6230 - Optimization Methods in Machine Learning}
   }
   \item<4->{
     Theoretical guarantees exist for \emph{convex} settings only.
-  } %add citations here as well
+  }
   \end{itemize}
 \end{frame}
 
@@ -121,20 +122,19 @@ CS6230 - Optimization Methods in Machine Learning}
 \end{frame}
 
 \begin{frame}{Definitions}
-\begin{alertblock}{\((\epsilon_{g}, \epsilon_{h})\)-Optimality}
+\begin{alertblock}{\((\eg, \eh)\)-Optimality}
 \label{sec-opt}
-Given \(\epsilon_{g}, \epsilon_{h} \in (0, 1)\), \(\mathbf{\hat{x}}\) is an \((\epsilon_{g}, \epsilon_{h})\)-optimal solution to the problem \ref{main-obj}, if:
+Given \(\eg, \eh \in (0, 1)\), \(\mathbf{\hat{x}}\) is an \((\eg, \eh)\)-optimal solution to the problem \ref{main-obj}, if:
 \begin{itemize}
-\item \(||\g F(\mathbf{\hat{x}}) || \leq \epsilon_{g}\)
-\item \(\mineig (\h F(\mathbf{\hat{x}})) \geq -\epsilon_{h}\)
+\item \(||\g F(\mathbf{\hat{x}}) || \leq \eg\)
+\item \(\mineig (\h F(\mathbf{\hat{x}})) \geq -\eh\)
 \end{itemize}
 \end{alertblock}
 \pause
-Note: If the function \(F\) satisfies \underline{strict saddle property}, then the above defined optimality condition ensures ``closeness'' to a local-minimum. % add citations
+Note: If the function \(F\) satisfies \underline{strict saddle property} \cite{ge-colt}, then the above defined optimality condition ensures ``closeness'' to a local-minimum.
 \pause
 \begin{alertblock}{Lipschitz and Bounded Hessian (Hessian Regularity)}
 Given \(\xbold_{t}\) and \(\sbold_{t}\) the \(t^{th}\) iterate and \(t^{th}\) update step respectively:
-\vspace{-2mm}
 \begin{itemize}
 \item \(||\h F(\xbold) - \h F(\xbold_{t})|| \leq L||\xbold - \xbold_{t}|| \hspace{4mm} \forall \xbold \in [\xbold_{t}, \xbold_{t} + \sbold_{t}]\)
 \item \(||\h F(\xbold_{t}) || \leq B, \hspace{4mm} B < \infty\)
@@ -145,7 +145,7 @@ Given \(\xbold_{t}\) and \(\sbold_{t}\) the \(t^{th}\) iterate and \(t^{th}\) up
 \subsection{Preliminaries}
 \begin{frame}{Trust Region Methods}
 \begin{itemize}
-\item<1->{Method used to optimize over \emph{non-convex} functions, proven to be extremely useful at or near saddle points, by leveraging the negative curvature around that point}
+\item<1->{Method used to optimize over \emph{non-convex} functions, proven to be extremely useful at or near saddle points, by leveraging the negative curvature around that point \cite{conn-siam}, \cite{sorensen-siam}}
 \item<2->{Helps achieve two things:
   \begin{itemize}
     \item<3->Finds optimal direction to move in
@@ -165,8 +165,8 @@ Given \(\xbold_{t}\) and \(\sbold_{t}\) the \(t^{th}\) iterate and \(t^{th}\) up
 \begin{itemize}
 \item<1->{Solve a minimization problem which is a constrained quadratic problem}
 \item<2->{Similarities to other eigenvalue problems, leading to special methods drawing inferences from existing methods e.g., truncated conjugate gradient methods, Lanczos trust-region based methods}
-\item<3->{To reach an \((\epsilon_{g}, \epsilon_{h})\)-optimal point as defined earlier, we need \(O\left(\max\{\epsilon_{h}^{-1}\epsilon_{g}^{-2}, \epsilon_{h}^{-3}\}\right)\)} %add citation
-\item<4->{To reach an \((\epsilon_{g}, \epsilon_{h})\)-optimal point, we need \(O\left(\max\{\epsilon_{g}^{-3}, \epsilon_{h}^{-3}\}\right)\)} %add citation
+\item<3->{To reach an \((\eg, \eh)\)-optimal point as defined earlier, we need \(O\left(\max\{\eh^{-1}\eg^{-2}, \eh^{-3}\}\right)\) \cite{cartis-joc}} 
+\item<4->{To reach an \((\eg, \eh)\)-optimal point, we need \(O\left(\max\{\eg^{-3}, \eh^{-3}\}\right)\) \cite{geovani-oms}}
 \end{itemize}
 \end{frame}
 
@@ -183,7 +183,7 @@ Given \(\xbold_{t}\) and \(\sbold_{t}\) the \(t^{th}\) iterate and \(t^{th}\) up
 \begin{equation}
 \label{CR}
 \sbold_{t} = \text{arg}\min_{\sbold} \frac{1}{2}\sbold^{T} \h F(\xbold_{t}) \sbold + \sbold^{T} \g F(\xbold_{t}) + \frac{\sigma_{t}}{3}||\sbold||^3
-\end{equation} % add citation
+\end{equation}
 }
 \item<6->{Notice familiarity?}
 \item<7->{What is different?}
@@ -194,8 +194,8 @@ Given \(\xbold_{t}\) and \(\sbold_{t}\) the \(t^{th}\) iterate and \(t^{th}\) up
 \begin{itemize}
 \item<1->{Solve a minimization problem which is an unconstrained quadratic problem, as opposed to constrained objective in \ref{TR}}
 \item<2->{Methods to solve this include Lanczos type iterations, fast approximate matrix inversion}
-\item<3->{To reach an \((\epsilon_{g}, \epsilon_{h})\)-optimal point as defined earlier, we need \(O\left(\max\{\epsilon_{g}^{-2}, \epsilon_{h}^{-3}\}\right)\)} %add citation
-\item<4->{Assuming more tight conditions helps improve the dependence on \(\epsilon_{g}\) - we need \(O\left(\max\{\epsilon_{g}^{-3/2}, \epsilon_{h}^{-3}\}\right)\)} %add citation
+\item<3->{To reach an \((\eg, \eh)\)-optimal point as defined earlier, we need \(O\left(\max\{\eg^{-2}, \eh^{-3}\}\right)\) \cite{cartis-joc}}
+\item<4->{Assuming more tight conditions helps improve the dependence on \(\eg\) - we need \(O\left(\max\{\eg^{-3/2}, \eh^{-3}\}\right)\) \cite{cartis-siam}} 
 \end{itemize}
 \end{frame}
 
@@ -226,12 +226,12 @@ where \(\sbold_{t}^{C}\) is a Cauchy point, along the negative gradient directio
 \includegraphics[width=0.9\textwidth]{./images/algo-1.png}
 \column{0.55\textwidth}
 \begin{theorem}
-Consider any \(0 < \epsilon_{g}, \epsilon_{h} < 1\). Suppose
+Consider any \(0 < \eg, \eh < 1\). Suppose
 \begin{itemize}
-\item<1->{\(H(\xbold)\) satisfies Inexact Hessian Regularity with \(\epsilon < (1 - \eta)\nu\epsilon_{h}\)}
+\item<1->{\(H(\xbold)\) satisfies Inexact Hessian Regularity with \(\epsilon < (1 - \eta)\nu\eh\)}
 \item<2->{\(\h F(\xbold)\) satisfies Hessian regularity}
 \item<3->{if the approximate solution to \ref{TR} satisfies Sufficient Descent Condition-1}, 
-\uncover<4->{then the algorithm terminates in at most \(T = O\left(\max\{\epsilon_{h}^{-1}\epsilon_{g}^{-2}, \epsilon_{h}^{-3}\}\right)\) iterations}
+\uncover<4->{then the algorithm terminates in at most \(T = O\left(\max\{\eh^{-1}\eg^{-2}, \eh^{-3}\}\right)\) iterations}
 \end{itemize}
 \end{theorem}
 \end{columns}
@@ -260,12 +260,12 @@ Assume that we solve \ref{CR} approximately to find \(\sbold_{t}\) such that:
 \includegraphics[width=0.9\textwidth]{./images/algo-2.png}
 \column{0.55\textwidth}
 \begin{theorem}
-Consider any \(0 < \epsilon_{g}, \epsilon_{h} < 1\). Suppose
+Consider any \(0 < \eg, \eh < 1\). Suppose
 \begin{itemize}
-\item<1->{\(H(\xbold)\) satisfies Inexact Hessian Regularity with \(\epsilon = \min\{\epsilon_{0}, \zeta \epsilon_{g}\}, \zeta \in (0, 0.5)\)}
+\item<1->{\(H(\xbold)\) satisfies Inexact Hessian Regularity with \(\epsilon = \min\{\epsilon_{0}, \zeta \eg\}, \zeta \in (0, 0.5)\)}
 \item<2->{\(\h F(\xbold)\) satisfies Hessian regularity}
 \item<3->{if the approximate solution to \ref{CR} satisfies Sufficient Descent Condition-2 and Sufficient Descent for Optimal Complexity}, 
-\uncover<4->{then the algorithm terminates in at most \(T = O\left(\max\{\epsilon_{g}^{-3/2}, \epsilon_{h}^{-3}\}\right)\) iterations}
+\uncover<4->{then the algorithm terminates in at most \(T = O\left(\max\{\eg^{-3/2}, \eh^{-3}\}\right)\) iterations}
 \end{itemize}
 \end{theorem}
 \end{columns}
@@ -276,9 +276,9 @@ Consider any \(0 < \epsilon_{g}, \epsilon_{h} < 1\). Suppose
 \item<1->{Same convergence rates with actual Hessians}
 \item<2->{Both the methods - trust region and cubic regularization, at termination satisfy
   \begin{equation*}
-  ||\g F(\xbold_{T})|| \leq \epsilon_{g} \hspace{4mm} \text{ and } \hspace{4mm} \mineig(\h F(\xbold_{T})) \geq -(\epsilon_{h} + \epsilon)
+  ||\g F(\xbold_{T})|| \leq \eg \hspace{4mm} \text{ and } \hspace{4mm} \mineig(\h F(\xbold_{T})) \geq -(\eh + \epsilon)
   \end{equation*}
-  \uncover<3->{in terms of the optimal point definition, these are \((\epsilon_{g}, \epsilon_{h} + \epsilon)\)-optimal points}
+  \uncover<3->{in terms of the optimal point definition, these are \((\eg, \eh + \epsilon)\)-optimal points}
 } 
 \end{itemize}
 \end{frame}
@@ -363,26 +363,26 @@ Pr\left(||H(\xbold) - \h F(\xbold)|| \leq \epsilon\right) \geq 1 - \delta
 \subsection{Convergence Analysis of Finite-Sum Minimization}
 \begin{frame}{Probabilistic Convergence for Trust Region on Finite-Sum Minimization}
 \begin{theorem}
-Consider \(0 < \epsilon_{g}, \epsilon_{h} < 1\).
+Consider \(0 < \eg, \eh < 1\).
 \begin{itemize}
-\item<1->{\(H(\xbold)\) satisfies Inexact Hessian Regularity with \(\epsilon < (1- \eta)\nu\epsilon_{h}\)}
+\item<1->{\(H(\xbold)\) satisfies Inexact Hessian Regularity with \(\epsilon < (1- \eta)\nu\eh\)}
 \item<2->{\(\h F(\xbold)\) satisfies Hessian regularity}
-\item<3->{\(\delta_{0} = \delta\min\{\epsilon_{g}^{2}\epsilon_{h}, \epsilon_{h}^{3}\}\) for some \(\delta \in (0, 1)\)}
+\item<3->{\(\delta_{0} = \delta\min\{\eg^{2}\eh, \eh^{3}\}\) for some \(\delta \in (0, 1)\)}
 \item<4->{\(\mathcal{S}\) sampled with parameters \(\epsilon, \delta_{0}\) using either uniform or non-uniform sampling.}
-\item<5->{if the approximate solution to \ref{TR} satisfies Sufficient Descent Condition-1, \uncover<6->{then the algorithm terminates in at most \(T = O\left(\max\{\epsilon_{h}^{-1}\epsilon_{g}^{-2}, \epsilon_{h}^{-3}\}\right)\) iterations, and with probability \(1 - \delta\), \(||\g F(\xbold_{T})|| \leq \epsilon_{g} \hspace{4mm} \text{ and } \hspace{4mm} \mineig(\h F(\xbold_{T})) \geq -(\epsilon + \epsilon_{h})\).}}
+\item<5->{if the approximate solution to \ref{TR} satisfies Sufficient Descent Condition-1, \uncover<6->{then the algorithm terminates in at most \(T = O\left(\max\{\eh^{-1}\eg^{-2}, \eh^{-3}\}\right)\) iterations, and with probability \(1 - \delta\), \(||\g F(\xbold_{T})|| \leq \eg \hspace{4mm} \text{ and } \hspace{4mm} \mineig(\h F(\xbold_{T})) \geq -(\epsilon + \eh)\).}}
 \end{itemize}
 \end{theorem}
 \end{frame}
 
 \begin{frame}{Probabilistic Convergence for Cubic Regularization on Finite-Sum Minimization}
 \begin{theorem}
-Consider \(0 < \epsilon_{g}, \epsilon_{h} < 1\).
+Consider \(0 < \eg, \eh < 1\).
 \begin{itemize}
-\item<1->{\(H(\xbold)\) satisfies Inexact Hessian Regularity with \(\epsilon = \min\{\epsilon_{0}, \zeta\epsilon_{g}\}, \zeta \in (0, 0.5)\)}
+\item<1->{\(H(\xbold)\) satisfies Inexact Hessian Regularity with \(\epsilon = \min\{\epsilon_{0}, \zeta\eg\}, \zeta \in (0, 0.5)\)}
 \item<2->{\(\h F(\xbold)\) satisfies Hessian regularity}
-\item<3->{\(\delta_{0} = \delta\min\{\epsilon_{g}^{3/2}, \epsilon_{h}^{3}\}\) for some \(\delta \in (0, 1)\)}
+\item<3->{\(\delta_{0} = \delta\min\{\eg^{3/2}, \eh^{3}\}\) for some \(\delta \in (0, 1)\)}
 \item<4->{\(\mathcal{S}\) sampled with parameters \(\epsilon, \delta_{0}\) using either uniform or non-uniform sampling.}
-\item<5->{if the approximate solution to \ref{CR} satisfies Sufficient Descent Condition-2 and Sufficient Descent for Optimal Complexity, \uncover<6->{then the algorithm terminates in at most \(T = O\left(\max\{\epsilon_{g}^{-3/2}, \epsilon_{h}^{-3}\}\right)\) iterations, and with probability \(1 - \delta\), \(||\g F(\xbold_{T})|| \leq \epsilon_{g} \hspace{4mm} \text{ and } \hspace{4mm} \mineig(\h F(\xbold_{T})) \geq -(\epsilon + \epsilon_{h})\).}}
+\item<5->{if the approximate solution to \ref{CR} satisfies Sufficient Descent Condition-2 and Sufficient Descent for Optimal Complexity, \uncover<6->{then the algorithm terminates in at most \(T = O\left(\max\{\eg^{-3/2}, \eh^{-3}\}\right)\) iterations, and with probability \(1 - \delta\), \(||\g F(\xbold_{T})|| \leq \eg \hspace{4mm} \text{ and } \hspace{4mm} \mineig(\h F(\xbold_{T})) \geq -(\epsilon + \eh)\).}}
 \end{itemize}
 \end{theorem}
 \end{frame}
@@ -400,5 +400,11 @@ Consider \(0 < \epsilon_{g}, \epsilon_{h} < 1\).
 \end{frame}
 
 \begin{frame}{Questions??}
+\end{frame}
+
+\begin{frame}[t,allowframebreaks]
+\frametitle{References}
+\bibliographystyle{plain}
+\bibliography{main.bib}
 \end{frame}
 \end{document}
