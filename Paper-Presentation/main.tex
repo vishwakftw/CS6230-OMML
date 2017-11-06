@@ -1,4 +1,4 @@
-\documentclass{beamer}
+\documentclass[10pt]{beamer}
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{bookmark}
@@ -134,6 +134,7 @@ Note: If the function \(F\) satisfies \underline{strict saddle property}, then t
 \pause
 \begin{alertblock}{Lipschitz and Bounded Hessian (Hessian Regularity)}
 Given \(\xbold_{t}\) and \(\sbold_{t}\) the \(t^{th}\) iterate and \(t^{th}\) update step respectively:
+\vspace{-2mm}
 \begin{itemize}
 \item \(||\h F(\xbold) - \h F(\xbold_{t})|| \leq L||\xbold - \xbold_{t}|| \hspace{4mm} \forall \xbold \in [\xbold_{t}, \xbold_{t} + \sbold_{t}]\)
 \item \(||\h F(\xbold_{t}) || \leq B, \hspace{4mm} B < \infty\)
@@ -283,7 +284,8 @@ Consider any \(0 < \epsilon_{g}, \epsilon_{h} < 1\). Suppose
 \end{frame}
 
 \section{Finite-Sum Minimization}
-\begin{frame}{Randomized Sub-sampling}
+\subsection{Random Sub-sampling}
+\begin{frame}{General problem}
 \begin{itemize}
 \item<1->{Consider a modified unconstrained optimization problem
   \begin{equation}
@@ -301,18 +303,102 @@ where each \(f_{i}\) is smooth, but possibly non-convex.}
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Randomized Sub-Sampling}
+\begin{frame}{General problem - Uniform sampling of the Hessian}
 \begin{theorem}
-Consider \(\displaystyle \sup_{\xbold\in\mathbb{R}^{d}} ||\h f_{i}(\xbold)|| \leq K_{i}, \hspace{2mm} \forall i \in \{1, 2, \ldots, n\}\). Let \(\displaystyle K_{\max} = \max_{i=1,\ldots, n} K_{i}\) and \(\hat{K} = \frac{1}{n} \displaystyle \sum_{i=1}^{n} K_{i}\). If \(p_{i} = \frac{1}{n} \hspace{1mm} \forall i \in \{1, 2, \ldots, n\}\), and \(|\mathcal{S}| \geq \frac{16K^{2}_{max}}{\epsilon^{2}}\log\frac{2d}{\delta} \), then with probability at least \(1 - \delta\), we have:
+Consider \(\displaystyle \sup_{\xbold\in\mathbb{R}^{d}} ||\h f_{i}(\xbold)|| \leq K_{i}, \hspace{2mm} \forall i \in \{1, 2, \ldots, n\}\). Let \(\displaystyle K_{\max} = \max_{i=1,\ldots, n} K_{i}\). If \(p_{i} = \frac{1}{n} \hspace{1mm} \forall i \in \{1, 2, \ldots, n\}\), and \(|\mathcal{S}| \geq \frac{16K^{2}_{max}}{\epsilon^{2}}\log\frac{2d}{\delta} \), then with probability at least \(1 - \delta\), we have:
 \begin{equation}
 Pr\left(||H(\xbold) - \h F(\xbold)|| \leq \epsilon\right) \geq 1 - \delta
 \end{equation}
 \end{theorem}
 \pause
-\uncover<2->{Two major implications:}
+\uncover<2->{Some major implications:}
 \begin{itemize}
 \item<3->{Higher the value of \(d\), more larger sample set is required. But this dependence is logarithmic.}
 \item<4->{Higher the number of samples, lower the value of \(\epsilon\), in turn better ``inexact'' Hessian.}
 \end{itemize}
+\end{frame}
+
+\begin{frame}{Special sub-problem}
+\begin{itemize}
+\item<1->{Applying a minor modification \(\xbold \rightarrow \mathbf{a}_{i}^{T}\xbold\), redefine the unconstrained optimization problem
+  \begin{equation}
+    \min_{\xbold \in \mathbb{R}^{d}} F(\xbold) \triangleq \frac{1}{n}\displaystyle \sum_{i=1}^{n} f_{i}(\mathbf{a}_{i}^{T}\xbold)
+  \end{equation}
+where each \(f_{i}\) is smooth, but possibly non-convex.}
+\item<2->{Provides a more clear analogy to Machine Learning problems, where \(\mathbf{a}_{i}\) is a ``data-vector" e.g., Linear Kernel SVMs, Logistic Regression}
+\item<3->{\(\h F(\xbold) = \frac{1}{n} \displaystyle \sum_{i=1}^{n} f_{i}''(\mathbf{a}_{i}^{T}\xbold) \mathbf{a}_{i}\mathbf{a}_{i}^{T}\)}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Special sub-problem - Non-uniform sampling of the Hessian}
+\begin{theorem}
+Consider \(\displaystyle \sup_{\xbold\in\mathbb{R}^{d}} ||\h f_{i}(\xbold)|| \leq K_{i}, \hspace{2mm} \forall i \in \{1, 2, \ldots, n\}\). Let \(\hat{K} = \frac{1}{n}\sum_{i=1}^{n} K_{i}\). If \(p_{i} = \displaystyle \frac{|f_{i}''(\mathbf{a}_{i}^{T}\xbold)| ||\mathbf{a}_{i}||^{2}_{2}}{N}\), where \(N\) is a normalizing factor and \(|\mathcal{S}| \geq \frac{4\hat{K}^{2}}{\epsilon^{2}}\log\frac{2d}{\delta}\), then with probability at least \(1 - \delta\), we have:
+\begin{equation}
+Pr\left(||H(\xbold) - \h F(\xbold)|| \leq \epsilon\right) \geq 1 - \delta
+\end{equation}
+\end{theorem}
+\pause
+\uncover<2->{Some major implications:}
+\begin{itemize}
+\item<3->{Higher the value of \(d\), more larger sample set is required. But this dependence is logarithmic.}
+\item<4->{Higher the number of samples, lower the value of \(\epsilon\), in turn better ``inexact'' Hessian.}
+\item<5->{Probabilities are also determined by the ``length" of the data.}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Usefulness and general ideas presented by these bounds}
+\begin{itemize}
+\item<1->{Both bounds depend on \(d\) in a logarithmic sense.}
+\item<2->{Larger the size of \(\mathcal{S}\), better the ``inexact" Hessian.
+  \begin{itemize}
+    \item<3->{\(\hat{K} \leq K_{\max}\). So?}
+    \item<4->{Smaller sample size \(|\mathcal{S}|\) required to achieve same level of accuracy in non-uniform sampling compared to uniform sampling}
+    \item<5->{Proves helpful if distribution of \(K_{i}'s\) is skewed i.e., \(\hat{K} << K_{\max}\)}
+  \end{itemize}
+}
+\item<3->{Choice of samples depend on the amount of curvature \(f_{i}''(\mathbf{a}_{i}^{T}\xbold)\), higher curvature \(\implies\) higher probability of being sampled.}
+\end{itemize}
+\end{frame}
+
+\subsection{Convergence Analysis of Finite-Sum Minimization}
+\begin{frame}{Probabilistic Convergence for Trust Region on Finite-Sum Minimization}
+\begin{theorem}
+Consider \(0 < \epsilon_{g}, \epsilon_{h} < 1\).
+\begin{itemize}
+\item<1->{\(H(\xbold)\) satisfies Inexact Hessian Regularity with \(\epsilon < (1- \eta)\nu\epsilon_{h}\)}
+\item<2->{\(\h F(\xbold)\) satisfies Hessian regularity}
+\item<3->{\(\delta_{0} = \delta\min\{\epsilon_{g}^{2}\epsilon_{h}, \epsilon_{h}^{3}\}\) for some \(\delta \in (0, 1)\)}
+\item<4->{\(\mathcal{S}\) sampled with parameters \(\epsilon, \delta_{0}\) using either uniform or non-uniform sampling.}
+\item<5->{if the approximate solution to \ref{TR} satisfies Sufficient Descent Condition-1, \uncover<6->{then the algorithm terminates in at most \(T = O\left(\max\{\epsilon_{h}^{-1}\epsilon_{g}^{-2}, \epsilon_{h}^{-3}\}\right)\) iterations, and with probability \(1 - \delta\), \(||\g F(\xbold_{T})|| \leq \epsilon_{g} \hspace{4mm} \text{ and } \hspace{4mm} \mineig(\h F(\xbold_{T})) \geq -(\epsilon + \epsilon_{h})\).}}
+\end{itemize}
+\end{theorem}
+\end{frame}
+
+\begin{frame}{Probabilistic Convergence for Cubic Regularization on Finite-Sum Minimization}
+\begin{theorem}
+Consider \(0 < \epsilon_{g}, \epsilon_{h} < 1\).
+\begin{itemize}
+\item<1->{\(H(\xbold)\) satisfies Inexact Hessian Regularity with \(\epsilon = \min\{\epsilon_{0}, \zeta\epsilon_{g}\}, \zeta \in (0, 0.5)\)}
+\item<2->{\(\h F(\xbold)\) satisfies Hessian regularity}
+\item<3->{\(\delta_{0} = \delta\min\{\epsilon_{g}^{3/2}, \epsilon_{h}^{3}\}\) for some \(\delta \in (0, 1)\)}
+\item<4->{\(\mathcal{S}\) sampled with parameters \(\epsilon, \delta_{0}\) using either uniform or non-uniform sampling.}
+\item<5->{if the approximate solution to \ref{CR} satisfies Sufficient Descent Condition-2 and Sufficient Descent for Optimal Complexity, \uncover<6->{then the algorithm terminates in at most \(T = O\left(\max\{\epsilon_{g}^{-3/2}, \epsilon_{h}^{-3}\}\right)\) iterations, and with probability \(1 - \delta\), \(||\g F(\xbold_{T})|| \leq \epsilon_{g} \hspace{4mm} \text{ and } \hspace{4mm} \mineig(\h F(\xbold_{T})) \geq -(\epsilon + \epsilon_{h})\).}}
+\end{itemize}
+\end{theorem}
+\end{frame}
+
+\section{Conclusion}
+\begin{frame}{Summary}
+\begin{itemize}
+\item<1->{Approximation of curvature information}
+\item<2->{Introduction to Trust Region and Cubic Regularization}
+\item<3->{Achieving approximate optimality based on conditions or properties of the inexact Hessian}
+\item<4->{Introduction to subsampling strategies}
+\item<5->{Probabilistic convergence for Trust Region and Cubic Regularization on the finite-sum minimization problem}
+\item<6->{Very theoretical - please view \href{arxiv.org/abs/1708.07827}{\beamergotobutton{Second-Order Optimization for Non-Convex Machine Learning: An Empirical Study}}}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Questions??}
 \end{frame}
 \end{document}
