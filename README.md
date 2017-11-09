@@ -12,3 +12,7 @@ Coursework pertaining to CS6230 : Optimization Methods in Machine Learning offer
 ### Assignment - 2
 + Subgradient calculus and properties
 + Proximal gradient descent based proofs
+
+### Programming Assignment - 2
++ Partly theoretical as well: Karush-Kuhn-Tucker conditions, Strong convexity, Dual Formulation
++ Cost Sensitive SVM in CVXPY
