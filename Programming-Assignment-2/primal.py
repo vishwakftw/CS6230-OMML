@@ -46,23 +46,33 @@ print("Problem exited with status: {0} and value attained: {1}".format(problem.s
 label_flag = [False, False]
 for i in range(0, m):
     if y[i] == 1:
-        if label_flag[0] == False:        
-            plt.plot(X[i,0], X[i,1], 'go', label='+1')
+        point_type = 'ro' if (slackvar[i].value) > 1e-07 else 'go'
+
+        if label_flag[0] == False and point_type == 'go':
+            plt.plot(X[i,0], X[i,1], point_type, label='+1')
             label_flag[0] = True
         else:
-            plt.plot(X[i,0], X[i,1], 'go')
+            plt.plot(X[i,0], X[i,1], point_type)
     else:
-        if label_flag[1] == False:        
-            plt.plot(X[i,0], X[i,1], 'bo', label='-1')
+        point_type = 'ro' if (slackvar[i].value) > 1e-07 else 'bo'
+
+        if label_flag[1] == False and point_type == 'bo':        
+            plt.plot(X[i,0], X[i,1], point_type, label='-1')
             label_flag[1] = True
         else:
-            plt.plot(X[i,0], X[i,1], 'bo')
+            plt.plot(X[i,0], X[i,1], point_type)
 
 x = np.arange(np.amin(X[:,0]), np.amax(X[:,0]), 0.001)
-beta = (beta.value).tolist()
+beta = np.array(beta.value).reshape(-1).tolist()
 beta_0 = beta_0.value
 y = -beta_0/beta[1] - beta[0]*x/beta[1]
-plt.plot(x, y, 'r--')
+plt.plot(x, y, 'k-')
 
+y_margin1 = (1 - beta_0 - beta[0]*x)/beta[1]
+plt.plot(x, y_margin1, 'r--')
+y_margin2 = (-1 - beta_0 - beta[0]*x)/beta[1]
+plt.plot(x, y_margin2, 'r--')
+
+print("Margin width: {0}".format(2/np.sqrt(beta[0]**2 + beta[1]**2)))
 plt.legend(loc='upper right', numpoints=1)
 plt.show()
