@@ -1,0 +1,40 @@
+\documentclass{article}
+\usepackage[margin=0.73in]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{hyperref}
+
+\title{Report for Programming Assignment 2}
+\author{Vishwak Srinivasan\\
+\texttt{CS15BTECH11043}}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section*{Part b}
+\subsection*{Question 1}
+\begin{flushleft}
+Below is the table representing the objective value of the optimal solution. The program used \texttt{CVXPY}, a convex programming module in Python.
+\begin{center}
+\begin{tabular}{|c|c|}
+\hline
+Penalty Parameter combination \((C_{1}, C_{2})\) & Objective Value \\
+\hline
+\hline
+\((1, 1)\) & \(9.60436\)\\
+\hline
+\((1, 10)\) & \(30.26522\)\\
+\hline
+\((10, 1)\) & \(11.89106\)\\
+\hline
+\end{tabular}
+\end{center}
+\end{flushleft}
+
+\subsection*{Question 2}
+The reason of different decision boundaries occuring with variation in the penalty parameters could be attributed to the relative weights assigned to the classes. For example, if we set \(C_{1} = C_{2} = 1\), we are implicitly stating that both the classes \(\{+1, -1\}\) are equally important. On the other hand, if we assign \(C_{1} = 10, C_{2} = 1\), then we are implicitly stating that \(+1\) gets a higher priority over \(-1\), in the sense that we can't afford to mis-classify many of \(+1\) datapoints, but we could rather compromise with \(-1\) datapoints. An analogous case follows for \(C_{1} = 1, C_{2} = 10\), wherein we ``weigh'' \(-1\) more than \(+1\). The variation can be seen as the decision boundary tries to keep a higher number of examples to the class having a higher penalty on one side of itself.
+
+\end{document}

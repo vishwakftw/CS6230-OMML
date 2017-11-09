@@ -40,7 +40,7 @@ problem = C.Problem(C.Minimize(objective), constraints)
 # Solve the problem
 problem.solve(solver=C.CVXOPT)
 
-print("Problem exited with status: {0} and value attained: {1}".format(problem.status, problem.value))
+print("Problem exited with status: {0} and value attained: {1}".format(problem.status, round(problem.value, 5)))
 
 # Plotting section
 label_flag = [False, False]
