@@ -4,7 +4,15 @@
 \usepackage{amssymb}
 \usepackage{graphicx}
 \usepackage{float}
+\usepackage{bookmark}
 \usepackage{hyperref}
+\newcommand{\xtilde}{\widetilde{X}}
+\newcommand{\indi}{\mathbb{I}}
+\newcommand{\setS}{\mathcal{S}}
+\newcommand{\real}{\mathbb{R}}
+\newcommand{\lagL}{\mathcal{L}}
+\newcommand{\minimize}{\mathop{\mathrm{minimize}}}
+\newcommand{\minimizewrt}[1]{\underset{#1}{\minimize}}   
 
 \title{Report for Programming Assignment 2}
 \author{Vishwak Srinivasan\\
@@ -14,10 +22,98 @@
 \begin{document}
 \maketitle
 
+\section*{Instructions for the code}
+\begin{itemize}
+\item There are two files: \texttt{primal.py} and \texttt{dual.py}. \texttt{primal.py} concerns questions b.1, b.2 and b.4. \texttt{dual.py} concerns question b.3.
+\item The programs used \texttt{CVXPY}, a convex programming module in Python.
+\item To run these programs, enter \texttt{python3 <file>.py --C1 <C1-value> --C2 <C2-value>}. \texttt{<file>} can be any one of \texttt{primal} and \texttt{dual}.
+\end{itemize}
+
+\section*{Part a}
+\subsection*{Question 1}
+\begin{flushleft}
+Strong duality holds for the below problem:
+\begin{multline}
+\minimizewrt{\beta \in \real^{p}, \hspace{0.5mm} \beta_{0} \in \real, \hspace{0.5mm} \xi \in \real^{n}} \frac{1}{2}||\beta||_{2}^{2} + C_{1}\sum_{i \in \setS_{1}} \xi_{i} + C_{2}\sum_{i \in \setS_{2}} \xi_{i} \\
+\text{subject to } \xi_{i} \geq 0, \hspace{2mm} y_{i}(x_{i}^{T}\beta + \beta_{0}) \geq 1 - \xi_{i}, \hspace{2mm} \forall i \in \{1, 2, \ldots, n\}
+\label{primal}
+\end{multline}
+
+The reasons are:
+\begin{itemize}
+\item The objective function is convex
+\item The constraints are affine in the variables to be optimized over
+\item Using the above two points and Slater's condition, we can tell \ref{primal} has strong duality.
+\end{itemize}
+\end{flushleft}
+
+\subsection*{Question 2}
+\begin{flushleft}
+Define the Lagrangian \(\mathcal{L}\) as:
+\begin{equation}
+\label{lagrangian}
+\displaystyle \lagL(\beta, \beta_{0}, \xi, \alpha, \mu) = \frac{1}{2}||\beta||_{2}^{2} + C_{1}\sum_{i \in \setS_{1}}\xi_{i} + C_{2}\sum_{i \in \setS_{2}}\xi_{i} + \sum_{i=1}^{n}\alpha_{i}(1 - \xi_{i} - y_{i}(x_{i}^{T}\beta + \beta_{0})) - \sum_{i=1}^{n}\mu_{i}(\xi_{i})
+\end{equation}
+
+By property of stationarity in \ref{lagrangian}, assuming \(\beta, \beta_{0}, \xi\) are solutions to the primal and \(\alpha, \mu\) are the solutions to the dual and using the stationarity sub-condition of the KKT conditions, we get:
+\begin{gather}
+\label{stationarity-beta}
+\displaystyle \nabla_{\beta} \lagL = \beta + \sum_{i=1}^{n}\alpha_{i}(-y_{i}x_{i}) = 0 \implies \beta = \sum_{i=1}^{n}\alpha_{i}y_{i}x_{i} \\
+\label{stationarity-beta-0}
+\displaystyle \frac{\partial \lagL}{\partial \beta_{0}} = -\sum_{i}^{n}\alpha_{i}y_{i} = 0 \implies \sum_{i}^{n}\alpha_{i}y_{i} = 0 \\
+\label{stationarity-xi}
+\displaystyle \frac{\partial \lagL}{\partial \xi_{i}} = C_{1}\indi_{i \in \setS_{1}} + C_{2}\indi_{i \in \setS_{2}} - \alpha_{i} - \mu_{i} = 0 \implies \alpha_{i} = C_{1}\indi_{i \in \setS_{1}} + C_{2}\indi_{i \in \setS_{2}} - \mu_{i}
+\end{gather}
+
+Now using the complementary slackness sub-condition of the KKT conditions, we get:
+\begin{gather}
+\label{compl-slack-alpha}
+\displaystyle \alpha_{i}(1 - \xi_{i} + y_{i}(x_{i}^{T}\beta + \beta_{0})) = 0 \hspace{4mm} \forall i \in \{1, 2, \ldots, n\} \\
+\label{compl-slack-mu}
+\displaystyle \mu_{i}\xi_{i} = 0 \hspace{4mm} \forall i \in \{1, 2, \ldots, n\}
+\end{gather}
+
+There is nothing specifically required to be written for the primal feasibility sub-condition, since the solution to the primal has to be naturally feasible. But using dual feasibility:
+\begin{equation}
+\label{dual-fease}
+\alpha_{i}, \mu_{i} \geq 0 \hspace{4mm} i \in \{1, 2, \ldots, n\}
+\end{equation}
+\end{flushleft}
+
+\subsection*{Question 3}
+\begin{flushleft}
+Note that \ref{stationarity-beta-0} can be written as \(y^{T}\alpha = 0\) by definition of the inner product. Similarly, construct a matrix:
+\begin{equation}
+\label{y-diag}
+\mathop{diag}(y) = \begin{bmatrix} y_{1} & 0 & \ldots & 0 \\ 0 & y_{2} & & \vdots \\ \vdots & & \ddots & 0 \\ 0 & \ldots & 0 & y_{n} \end{bmatrix} 
+\end{equation}
+
+Using \ref{y-diag}, we can note that:
+\begin{equation}
+\label{x-tilde}
+\xtilde = \mathop{diag}(y)X = \begin{bmatrix} y_{1}x_{1} \\ \vdots \\ y_{n}x_{n} \end{bmatrix}
+\end{equation}
+
+From \ref{stationarity-beta}, we can rewrite \(\beta\) as:
+\begin{equation}
+\label{beta-x-tilde}
+\beta = \sum_{i=1}^{n} \alpha_{i}\xtilde_{i} = \xtilde^{T}\alpha \implies ||\beta||_{2}^{2} = \beta^{T}\beta = \alpha^{T}\xtilde\xtilde^{T}\alpha
+\end{equation}
+
+Using \ref{dual-fease} and \ref{stationarity-xi}, we can tell that:
+\begin{equation}
+\label{alpha-S}
+0 \leq \alpha_{i} \leq C_{1}\indi_{i \in \setS_{1}} + C_{2}\indi_{i \in \setS_{2}} \implies 0 \leq \alpha_{\setS_{j}} \leq C_{j}\mathbf{1} \hspace{2mm} \forall j \in \{1, 2\}
+\end{equation}
+
+The above step in \ref{alpha-S} uses the fact that if \(i \in \setS_{1}\), then \(i \notin \setS_{2}\). \(\alpha_{\setS_{j}}\) denotes the vector of \(\alpha_{i}\)s such that \(i \in \setS_{j}\).
+
+\end{flushleft}
+
 \section*{Part b}
 \subsection*{Question 1}
 \begin{flushleft}
-Below is the table representing the objective value of the optimal solution. The program used \texttt{CVXPY}, a convex programming module in Python.
+Below is the table representing the objective value of the optimal solution.
 \begin{center}
 \begin{tabular}{|c|c|}
 \hline
@@ -36,5 +132,22 @@ Penalty Parameter combination \((C_{1}, C_{2})\) & Objective Value \\
 
 \subsection*{Question 2}
 The reason of different decision boundaries occuring with variation in the penalty parameters could be attributed to the relative weights assigned to the classes. For example, if we set \(C_{1} = C_{2} = 1\), we are implicitly stating that both the classes \(\{+1, -1\}\) are equally important. On the other hand, if we assign \(C_{1} = 10, C_{2} = 1\), then we are implicitly stating that \(+1\) gets a higher priority over \(-1\), in the sense that we can't afford to mis-classify many of \(+1\) datapoints, but we could rather compromise with \(-1\) datapoints. An analogous case follows for \(C_{1} = 1, C_{2} = 10\), wherein we ``weigh'' \(-1\) more than \(+1\). The variation can be seen as the decision boundary tries to keep a higher number of examples to the class having a higher penalty on one side of itself.
+
+\subsection*{Question 4}
+The total classification error calculated in a zero-one loss manner is below:
+\begin{center}
+\begin{tabular}{|c|c|}
+\hline
+Penalty Parameter combination \((C_{1}, C_{2})\) & Weighted Classification Error \\
+\hline
+\hline
+\((1, 1)\) & \(3\) \\
+\hline
+\((1, 10)\) & \(16\) \\
+\hline
+\((10, 1)\) & \(4\) \\
+\hline
+\end{tabular}
+\end{center}
 
 \end{document}
