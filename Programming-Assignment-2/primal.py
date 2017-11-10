@@ -46,23 +46,31 @@ print("Problem exited with status: {0} and value attained: {1}".format(problem.s
 beta_file = open('beta.txt', 'w')
 
 # Plotting section
-label_flag = [False, False]
+plt.ylabel('$x_{1}$', fontsize=20)
+plt.xlabel('$x_{2}$', fontsize=20)
+truths = [False, False, False]
 for i in range(0, m):
     beta_file.write('{0}\n'.format(round(y[i]*(np.dot(np.array(beta.value).reshape(-1), X[i]) + beta_0.value), 8)))
     if y[i] == 1:
-        point_type = 'ro' if (slackvar[i].value) > 1e-06 else 'go'
+        point_type = 'mo' if (slackvar[i].value) > 1e-06 else 'go'
 
-        if label_flag[0] == False and point_type == 'go':
+        if point_type == 'go' and truths[0] == False:
             plt.plot(X[i,0], X[i,1], point_type, label='+1')
-            label_flag[0] = True
+            truths[0] = True
+        elif point_type == 'mo' and truths[2] == False:
+            plt.plot(X[i,0], X[i,1], point_type, label='$\\xi_{i} > 0$')
+            truths[2] = True
         else:
             plt.plot(X[i,0], X[i,1], point_type)
     else:
-        point_type = 'ro' if (slackvar[i].value) > 1e-06 else 'bo'
+        point_type = 'mo' if (slackvar[i].value) > 1e-06 else 'bo'
 
-        if label_flag[1] == False and point_type == 'bo':        
+        if point_type == 'bo' and truths[1] == False:
             plt.plot(X[i,0], X[i,1], point_type, label='-1')
-            label_flag[1] = True
+            truths[1] = True
+        elif point_type == 'mo' and truths[2] == False:
+            plt.plot(X[i,0], X[i,1], point_type, label='$\\xi_{i} > 0$')
+            truths[2] = True
         else:
             plt.plot(X[i,0], X[i,1], point_type)
 
@@ -70,22 +78,22 @@ x = np.arange(np.amin(X[:,0]), np.amax(X[:,0]), 0.001)
 beta = np.array(beta.value).reshape(-1).tolist()
 beta_0 = beta_0.value
 y_decbound = -beta_0/beta[1] - beta[0]*x/beta[1]
-plt.plot(x, y_decbound, 'k-')
+plt.plot(x, y_decbound, 'k-', label='Decision Boundary')
 
 y_margin1 = (1 - beta_0 - beta[0]*x)/beta[1]
 plt.plot(x, y_margin1, 'r--')
 y_margin2 = (-1 - beta_0 - beta[0]*x)/beta[1]
-plt.plot(x, y_margin2, 'r--')
+plt.plot(x, y_margin2, 'r--', label='Support Vectors')
 
 print("Margin width: {0}".format(2/np.sqrt(beta[0]**2 + beta[1]**2)))
-plt.legend(loc='upper right', numpoints=1)
+
+plt.legend(loc='upper right', numpoints=1, ncol=2)
 plt.show()
 
 # Calculating prediction error
 total_error = 0
 for i in range(0, m):
     pred = np.sign((np.dot(beta, X[i]) + beta_0))
-    print("Actual: {0}\tPredicted: {1}".format(y[i], pred))
     if pred == 1 and y[i] == -1:
         total_error += opt.C2
     elif pred == -1 and y[i] == 1:

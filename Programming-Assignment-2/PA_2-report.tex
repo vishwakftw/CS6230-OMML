@@ -29,6 +29,7 @@
 \item There are two files: \texttt{primal.py} and \texttt{dual.py}. \texttt{primal.py} concerns questions b.1, b.2 and b.4. \texttt{dual.py} concerns question b.3.
 \item The programs used \texttt{CVXPY}, a convex programming module in Python.
 \item To run these programs, enter \texttt{python3 <file>.py --C1 <C1-value> --C2 <C2-value>}. \texttt{<file>} can be any one of \texttt{primal} and \texttt{dual}.
+\item The output of \texttt{dual.py} requires the output of \texttt{primal.py} for the same parameters \texttt{C1} and \texttt{C2}. So please run \texttt{primal.py} first, and then \texttt{dual.py}. \texttt{primal.py} writes a \texttt{beta.txt} file that is used by \texttt{dual.py}, which also uses a \texttt{alpha.txt} file.
 \end{itemize}
 
 \section*{Part a}
@@ -76,10 +77,16 @@ Now using the complementary slackness sub-condition of the KKT conditions, we ge
 \displaystyle \mu_{i}\xi_{i} = 0 \hspace{4mm} \forall i \in \{1, 2, \ldots, n\}
 \end{gather}
 
-There is nothing specifically required to be written for the primal feasibility sub-condition, since the solution to the primal has to be naturally feasible. But using dual feasibility:
+Using primal feasibility:
+\begin{equation}
+\label{primal-fease}
+\xi_{i}, y_{i}(\beta^{T}x_{i} + \beta_{0}) \geq 0 \hspace{4mm} \forall i \in \{1, 2, \ldots, n\}
+\end{equation}
+
+Using dual feasibility:
 \begin{equation}
 \label{dual-fease}
-\alpha_{i}, \mu_{i} \geq 0 \hspace{4mm} i \in \{1, 2, \ldots, n\}
+\alpha_{i}, \mu_{i} \geq 0 \hspace{4mm} \forall i \in \{1, 2, \ldots, n\}
 \end{equation}
 \end{flushleft}
 
@@ -127,8 +134,10 @@ Now since the primal problem \ref{primal} was a minimization problem, the dual w
 \maximizewrt{\alpha \in \real^{n}} -\frac{1}{2}\alpha^{T}\xtilde\xtilde\alpha + \alpha^{T}\mathbf{1} \hspace{5mm}
 \text{subject to } y^{T}\alpha = 0, \hspace{2mm} \mathbf{0} \leq \alpha_{\setS_{j}} \leq C_{j}\mathbf{1} \hspace{2mm} \forall j \in \{1, 2\}
 \end{equation}
-
 \end{flushleft}
+
+\subsection*{Question 4}
+\ref{primal} is a Quadratic Programming problem and a Second Order Cone Program, whereas the dual formulation \ref{dual} is a Quadratic program.
 
 \section*{Part b}
 \subsection*{Question 1}
@@ -152,6 +161,13 @@ Penalty Parameter combination \((C_{1}, C_{2})\) & Objective Value \\
 
 \subsection*{Question 2}
 The reason of different decision boundaries occuring with variation in the penalty parameters could be attributed to the relative weights assigned to the classes. For example, if we set \(C_{1} = C_{2} = 1\), we are implicitly stating that both the classes \(\{+1, -1\}\) are equally important. On the other hand, if we assign \(C_{1} = 10, C_{2} = 1\), then we are implicitly stating that \(+1\) gets a higher priority over \(-1\), in the sense that we can't afford to mis-classify many of \(+1\) datapoints, but we could rather compromise with \(-1\) datapoints. An analogous case follows for \(C_{1} = 1, C_{2} = 10\), wherein we ``weigh'' \(-1\) more than \(+1\). The variation can be seen as the decision boundary tries to keep a higher number of examples to the class having a higher penalty on one side of itself.
+
+\subsection*{Question 3}
+\begin{itemize}
+\item If \(\alpha_{i} = 0\), then the points \(x_{i}\) don't contribute to the boundary of the margin, since we know from \ref{stationarity-beta} that \(\beta\) is dependent on \(\alpha_{i}\)s. From observation of the graph generated, this also seems to mean that these refer to the points being correctly classified.
+\item if \(\alpha_{i} \in (0, C_{k}), i \in \setS_{k}\), then the \(\mu_{i} > 0 \implies \xi_{i} = 0\) from \ref{compl-slack-mu}. This means that these are \(x_{i}\)s lying on the margins of the boundaries.
+\item if \(\alpha_{i} = C_{k}, i \in \setS_{k}\), then \(\mu_{i} = 0 \implies \xi_{i} \geq 0\) from \ref{compl-slack-mu}. This means that these refer to points being incorrectly classified or points on the margin of the boundary.
+\end{itemize}
 
 \subsection*{Question 4}
 The total classification error calculated in a zero-one loss manner is below:
