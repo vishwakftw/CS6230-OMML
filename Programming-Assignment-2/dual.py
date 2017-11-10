@@ -42,6 +42,24 @@ for i in range(0, m):
 problem = C.Problem(C.Maximize(objective), constraints)
 
 # Solve the problem
-problem.solve(solver=C.CVXOPT)
+problem.solve(solver=C.ECOS, abstol=1e-10, reltol=1e-09, feastol=1e-10, max_iters=1000)
 
 print("Problem exited with status: {0} and value attained: {1}".format(problem.status, round(problem.value, 5)))
+
+# Saving the \alphas into a text file
+alpha_file = open('alpha.txt', 'w')
+for i in range(0, m):
+    alpha_file.write('{0}\n'.format(round(alpha[i].value, 8)))
+alpha_file.close()
+
+# Plotting the comparison of \alpha vs y(<\beta, x> + \beta_0)
+alpha_vals = np.around(np.genfromtxt('alpha.txt'), decimals=7)
+beta_vals = np.around(np.genfromtxt('beta.txt'), decimals=7)
+
+for i in range(0, m):
+    plt.plot(alpha_vals[i], beta_vals[i], 'b.')
+
+plt.xlim((-0.005, 1.005))
+plt.xlabel('$\\alpha_{i}$')
+plt.ylabel('$y_{i}(\\beta_{i}^{T}x_{i} + \\beta_{0})$')
+plt.show()

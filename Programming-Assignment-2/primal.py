@@ -38,13 +38,17 @@ for i in range(0, m):
 problem = C.Problem(C.Minimize(objective), constraints)
 
 # Solve the problem
-problem.solve(solver=C.CVXOPT)
+problem.solve(solver=C.ECOS, abstol=1e-10, reltol=1e-09, feastol=1e-10, max_iters=1000)
 
 print("Problem exited with status: {0} and value attained: {1}".format(problem.status, round(problem.value, 5)))
+
+# Saving the y(<beta, x> + beta_0) into a text file
+beta_file = open('beta.txt', 'w')
 
 # Plotting section
 label_flag = [False, False]
 for i in range(0, m):
+    beta_file.write('{0}\n'.format(round(y[i]*(np.dot(np.array(beta.value).reshape(-1), X[i]) + beta_0.value), 8)))
     if y[i] == 1:
         point_type = 'ro' if (slackvar[i].value) > 1e-07 else 'go'
 
@@ -65,8 +69,8 @@ for i in range(0, m):
 x = np.arange(np.amin(X[:,0]), np.amax(X[:,0]), 0.001)
 beta = np.array(beta.value).reshape(-1).tolist()
 beta_0 = beta_0.value
-y = -beta_0/beta[1] - beta[0]*x/beta[1]
-plt.plot(x, y, 'k-')
+y_decbound = -beta_0/beta[1] - beta[0]*x/beta[1]
+plt.plot(x, y_decbound, 'k-')
 
 y_margin1 = (1 - beta_0 - beta[0]*x)/beta[1]
 plt.plot(x, y_margin1, 'r--')
@@ -76,3 +80,14 @@ plt.plot(x, y_margin2, 'r--')
 print("Margin width: {0}".format(2/np.sqrt(beta[0]**2 + beta[1]**2)))
 plt.legend(loc='upper right', numpoints=1)
 plt.show()
+
+# Calculating prediction error
+total_error = 0
+for i in range(0, m):
+    pred = np.sign((np.dot(beta, X[i]) + beta_0))
+    print("Actual: {0}\tPredicted: {1}".format(y[i], pred))
+    if pred == 1 and y[i] == -1:
+        total_error += opt.C2
+    elif pred == -1 and y[i] == 1:
+        total_error += opt.C1
+print("Total Weighted Classification Error for C1 = {0} and C2 = {1} is {2}".format(opt.C1, opt.C2, total_error))
