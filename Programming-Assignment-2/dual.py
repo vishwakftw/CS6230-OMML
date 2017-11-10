@@ -59,7 +59,7 @@ beta_vals = np.around(np.genfromtxt('beta.txt'), decimals=7)
 for i in range(0, m):
     plt.plot(alpha_vals[i], beta_vals[i], 'b.')
 
-plt.xlim((-0.005, 1.005))
+plt.xlim((-0.01, 1.01))
 plt.xlabel('$\\alpha_{i}$')
 plt.ylabel('$y_{i}(\\beta_{i}^{T}x_{i} + \\beta_{0})$')
 plt.show()

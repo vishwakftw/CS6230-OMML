@@ -12,7 +12,9 @@
 \newcommand{\real}{\mathbb{R}}
 \newcommand{\lagL}{\mathcal{L}}
 \newcommand{\minimize}{\mathop{\mathrm{minimize}}}
+\newcommand{\maximize}{\mathop{\mathrm{maximize}}}
 \newcommand{\minimizewrt}[1]{\underset{#1}{\minimize}}   
+\newcommand{\maximizewrt}[1]{\underset{#1}{\maximize}}   
 
 \title{Report for Programming Assignment 2}
 \author{Vishwak Srinivasan\\
@@ -34,16 +36,17 @@
 \begin{flushleft}
 Strong duality holds for the below problem:
 \begin{multline}
+\label{primal}
 \minimizewrt{\beta \in \real^{p}, \hspace{0.5mm} \beta_{0} \in \real, \hspace{0.5mm} \xi \in \real^{n}} \frac{1}{2}||\beta||_{2}^{2} + C_{1}\sum_{i \in \setS_{1}} \xi_{i} + C_{2}\sum_{i \in \setS_{2}} \xi_{i} \\
 \text{subject to } \xi_{i} \geq 0, \hspace{2mm} y_{i}(x_{i}^{T}\beta + \beta_{0}) \geq 1 - \xi_{i}, \hspace{2mm} \forall i \in \{1, 2, \ldots, n\}
-\label{primal}
 \end{multline}
 
 The reasons are:
 \begin{itemize}
-\item The objective function is convex
-\item The constraints are affine in the variables to be optimized over
-\item Using the above two points and Slater's condition, we can tell \ref{primal} has strong duality.
+\item The objective function is convex.
+\item The constraints are affine in the variables to be optimized over.
+\item \(\xi = \mathbf{1}, \beta = \mathbf{0}, \beta_{0} = 0\) is a point of strict feasibility in constraints.
+\item Using the above three points and Slater's condition, we can tell \ref{primal} has strong duality.
 \end{itemize}
 \end{flushleft}
 
@@ -58,11 +61,11 @@ Define the Lagrangian \(\mathcal{L}\) as:
 By property of stationarity in \ref{lagrangian}, assuming \(\beta, \beta_{0}, \xi\) are solutions to the primal and \(\alpha, \mu\) are the solutions to the dual and using the stationarity sub-condition of the KKT conditions, we get:
 \begin{gather}
 \label{stationarity-beta}
-\displaystyle \nabla_{\beta} \lagL = \beta + \sum_{i=1}^{n}\alpha_{i}(-y_{i}x_{i}) = 0 \implies \beta = \sum_{i=1}^{n}\alpha_{i}y_{i}x_{i} \\
+\displaystyle \nabla_{\beta} \lagL = \beta + \sum_{i=1}^{n}\alpha_{i}(-y_{i}x_{i}) = \mathbf{0} \implies \beta = \sum_{i=1}^{n}\alpha_{i}y_{i}x_{i} \\
 \label{stationarity-beta-0}
-\displaystyle \frac{\partial \lagL}{\partial \beta_{0}} = -\sum_{i}^{n}\alpha_{i}y_{i} = 0 \implies \sum_{i}^{n}\alpha_{i}y_{i} = 0 \\
+\displaystyle \frac{\partial \lagL}{\partial \beta_{0}} = -\sum_{i=1}^{n}\alpha_{i}y_{i} = 0 \implies \sum_{i=1}^{n}\alpha_{i}y_{i} = 0 \\
 \label{stationarity-xi}
-\displaystyle \frac{\partial \lagL}{\partial \xi_{i}} = C_{1}\indi_{i \in \setS_{1}} + C_{2}\indi_{i \in \setS_{2}} - \alpha_{i} - \mu_{i} = 0 \implies \alpha_{i} = C_{1}\indi_{i \in \setS_{1}} + C_{2}\indi_{i \in \setS_{2}} - \mu_{i}
+\displaystyle \frac{\partial \lagL}{\partial \xi_{i}} = C_{1}\indi_{i \in \setS_{1}} + C_{2}\indi_{i \in \setS_{2}} - \alpha_{i} - \mu_{i} = 0 \implies \alpha_{i} + \mu_{i} = C_{j} \hspace{1.5mm} \forall i \in \setS_{j} \hspace{1.5mm} \forall j \in \{1, 2\}
 \end{gather}
 
 Now using the complementary slackness sub-condition of the KKT conditions, we get:
@@ -102,11 +105,28 @@ From \ref{stationarity-beta}, we can rewrite \(\beta\) as:
 
 Using \ref{dual-fease} and \ref{stationarity-xi}, we can tell that:
 \begin{equation}
-\label{alpha-S}
-0 \leq \alpha_{i} \leq C_{1}\indi_{i \in \setS_{1}} + C_{2}\indi_{i \in \setS_{2}} \implies 0 \leq \alpha_{\setS_{j}} \leq C_{j}\mathbf{1} \hspace{2mm} \forall j \in \{1, 2\}
+\label{dual-constraints}
+0 \leq \alpha_{i} \leq C_{1}\indi_{i \in \setS_{1}} + C_{2}\indi_{i \in \setS_{2}} \implies \mathbf{0} \leq \alpha_{\setS_{j}} \leq C_{j}\mathbf{1} \hspace{2mm} \forall j \in \{1, 2\}
 \end{equation}
 
-The above step in \ref{alpha-S} uses the fact that if \(i \in \setS_{1}\), then \(i \notin \setS_{2}\). \(\alpha_{\setS_{j}}\) denotes the vector of \(\alpha_{i}\)s such that \(i \in \setS_{j}\).
+The above step in \ref{dual-constraints} uses the fact that if \(i \in \setS_{1}\), then \(i \notin \setS_{2}\). \(\alpha_{\setS_{j}}\) denotes the vector of \(\alpha_{i}\)s such that \(i \in \setS_{j}\).
+
+Now substituting \ref{beta-x-tilde}, \ref{stationarity-beta}, \ref{stationarity-beta-0} and \ref{stationarity-xi} in \ref{lagrangian}, we get:
+\begin{multline}
+\displaystyle \lagL = \frac{1}{2}\alpha^{T}\xtilde\xtilde^{T}\alpha + \sum_{i\in\setS_{1}} (C_{1} - \alpha_{i} - \mu_{i})\xi_{i} + \sum_{i\in\setS_{2}} (C_{2} - \alpha_{i} - \mu_{i})\xi_{i} + \\\sum_{i=1}^{n} \alpha_{i} - \sum_{i=1}^{n}\sum_{j=1}^{n}\alpha_{i}\alpha_{j} y_{i}y_{j} x_{i}^{T}x_{j} - \beta_{0}\sum_{i=1}^{n}\alpha_{i}y_{i} \hspace{4mm} \text{ (Using \ref{beta-x-tilde} and \ref{stationarity-beta}) }
+\end{multline}
+\begin{gather}
+\displaystyle \implies \lagL = \frac{1}{2}\alpha^{T}\xtilde\xtilde^{T}\alpha + \sum_{i=1}^{n} \alpha_{i} - ||\beta||_{2}^{2} \hspace{4mm} \text{ (Using \ref{stationarity-beta-0}, \ref{stationarity-beta} and \ref{stationarity-xi}) } \\
+\label{dual-objective}
+\displaystyle \implies \lagL = -\frac{1}{2}\alpha^{T}\xtilde\xtilde^{T}\alpha + \sum_{i=1}^{n} \alpha_{i} = -\frac{1}{2}\alpha^{T}\xtilde\xtilde\alpha + \alpha^{T}\mathbf{1} \hspace{4mm} \text{ (Using \ref{beta-x-tilde}) }
+\end{gather}
+
+Now since the primal problem \ref{primal} was a minimization problem, the dual will be a maximization problem. Using \ref{dual-objective}, \ref{dual-constraints}, we formulate the dual problem is below:
+\begin{equation}
+\label{dual}
+\maximizewrt{\alpha \in \real^{n}} -\frac{1}{2}\alpha^{T}\xtilde\xtilde\alpha + \alpha^{T}\mathbf{1} \hspace{5mm}
+\text{subject to } y^{T}\alpha = 0, \hspace{2mm} \mathbf{0} \leq \alpha_{\setS_{j}} \leq C_{j}\mathbf{1} \hspace{2mm} \forall j \in \{1, 2\}
+\end{equation}
 
 \end{flushleft}
 

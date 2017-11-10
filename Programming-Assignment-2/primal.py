@@ -50,7 +50,7 @@ label_flag = [False, False]
 for i in range(0, m):
     beta_file.write('{0}\n'.format(round(y[i]*(np.dot(np.array(beta.value).reshape(-1), X[i]) + beta_0.value), 8)))
     if y[i] == 1:
-        point_type = 'ro' if (slackvar[i].value) > 1e-07 else 'go'
+        point_type = 'ro' if (slackvar[i].value) > 1e-06 else 'go'
 
         if label_flag[0] == False and point_type == 'go':
             plt.plot(X[i,0], X[i,1], point_type, label='+1')
@@ -58,7 +58,7 @@ for i in range(0, m):
         else:
             plt.plot(X[i,0], X[i,1], point_type)
     else:
-        point_type = 'ro' if (slackvar[i].value) > 1e-07 else 'bo'
+        point_type = 'ro' if (slackvar[i].value) > 1e-06 else 'bo'
 
         if label_flag[1] == False and point_type == 'bo':        
             plt.plot(X[i,0], X[i,1], point_type, label='-1')
