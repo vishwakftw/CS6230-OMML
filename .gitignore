@@ -11,3 +11,5 @@
 *.hdf5
 *.bcf
 *.xml
+*.pt
+*byte

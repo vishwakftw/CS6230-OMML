@@ -1,0 +1,5 @@
+{
+    "lr": 1e-04,
+    "weight_decay": 1e-04,
+    "momentum": 0.9
+}

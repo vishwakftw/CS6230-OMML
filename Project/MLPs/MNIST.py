@@ -6,6 +6,8 @@ from torchvision import transforms
 from argparse import ArgumentParser
 from torchvision.datasets import MNIST
 from torch.utils.data import DataLoader
+from torch.autograd import Variable as V
+from utils import return_model, return_optimizer
 
 np.random.seed(29)
 t.manual_seed(29)
@@ -28,26 +30,94 @@ if p.cuda != -1:
 # Load the data
 transformations = transforms.Compose([transforms.ToTensor(), 
                                       transforms.Normalize((0.5,), (0.5,)), 
-                                      transforms.Lambda(lambda x: x.view(-1, 784))
+                                      transforms.Lambda(lambda x: x.view(784))
                                     ])
 tr_dset = MNIST(root=p.dataroot, train=True, transform=transformations, download=True)
 te_dset = MNIST(root=p.dataroot, train=False, transform=transformations, download=True)
 tr_d_loader = DataLoader(dataset=tr_dset, batch_size=64, shuffle=True)
-te_d_loader = DataLoader(dataset=te_dset, batch_size=1000, shuffle=True)
+te_d_loader = DataLoader(dataset=te_dset, batch_size=5000, shuffle=True)
 
 # Build MLP architecture
-arch_vals = np.genfromtxt(p.architecture, delimiter=',').reshape(-1)
-activations = {'relu': nn.ReLU(True), 
-               'sigmoid': nn.Sigmoid(True),
-               'tanh': nn.Tanh(True),
-               'leaky_relu', nn.LeakyReLU(0.2, inplace=True)
-              }
-
-model = nn.Sequential()
-for i in range(0, arch_vals.shape[0] - 1):
-    model.add_module('linear_{0}-{1}-{2}'.format(i, arch_vals[i], arch_vals[i+1]), nn.Linear(arch_vals[i], arch_vals[i+1]))
-    if i != arch_vals.shape[0] - 2:
-        model.add_module('{0}_{1}'.format(p.activation, i), activations[p.activation])
+arch_vals = np.genfromtxt(p.architecture, delimiter=',').reshape(-1).astype(int).tolist()
+model = return_model(arch_vals, p.activation)
+print(model)
 
 if p.cuda != -1:
     model = model.cuda()
+
+# Build Optimizer
+optimizer = return_optimizer(p.opt, json.load(open(p.opt_params)), model.parameters())
+print(optimizer)
+
+# Loss function
+loss_fn = nn.CrossEntropyLoss()
+if p.cuda != -1:
+    loss_fn = loss_fn.cuda()
+
+optimizer_params = json.load(open(p.opt_params))
+params = [p.opt]
+for k in sorted(list(optimizer_params)):
+    params.append(optimizer_params[k])
+for k in arch_vals:
+    params.append(arch_vals)
+
+loss_log = open('loss_{0}_{1}_{2}.txt'.format(arch_vals, p.opt, json.load(open(p.opt_params))), 'w')
+
+flag = False
+iters = 0
+while flag != True:
+    model.train()
+    for i, itr in enumerate(tr_d_loader):
+        x, y = itr[0], itr[1]
+        if p.cuda != -1:    
+            x = x.cuda()
+            y = y.cuda()
+        x, y = V(x), V(y)
+        cur_loss = loss_fn(model(x), y)
+        loss_log.write('{0}\t{1}\n'.format(iters, round(cur_loss.data[0], 6)))
+        if iters == p.maxiter:
+            flag = True
+            break
+        if iters % 1000 == 0:
+            print('{0} iterations completed'.format(iters))
+        cur_loss = cur_loss.cuda()
+        model.zero_grad()
+        cur_loss.backward()
+        optimizer.step()
+        iters += 1
+
+model.eval()
+tr_d_loader = DataLoader(dataset=tr_dset, batch_size=5000, shuffle=True)
+N = 0
+accuracy = 0
+for i, itr in enumerate(tr_d_loader):
+    x, y = itr[0], itr[1]
+    if p.cuda != -1:    
+        x = x.cuda()
+        y = y.cuda()
+    x, y = V(x), V(y)
+    forward_pass = model(x)
+    maxes, pred_y = forward_pass.max(1)
+    pred_y = pred_y.view(-1)
+    
+    N += itr[1].size(0)
+    accuracy += np.linalg.norm(np.array((pred_y - y).data.tolist()), ord=0)
+accuracy = (1 - accuracy/N)*100
+print('Train Accuracy after {0} iterations with {1} is {2}'.format(p.maxiter, p.opt, round(accuracy, 5)))
+
+N = 0
+accuracy = 0
+for i, itr in enumerate(te_d_loader):
+    x, y = itr[0], itr[1]
+    if p.cuda != -1:    
+        x = x.cuda()
+        y = y.cuda()
+    x, y = V(x), V(y)
+    forward_pass = model(x)
+    maxes, pred_y = forward_pass.max(1)
+    pred_y = pred_y.view(-1)
+    
+    N += itr[1].size(0)
+    accuracy += np.linalg.norm(np.array((pred_y - y).data.tolist()), ord=0)
+accuracy = (1 - accuracy/N)*100
+print('Test Accuracy after {0} iterations with {1} is {2}'.format(p.maxiter, p.opt, round(accuracy, 5)))
