@@ -9,3 +9,5 @@
 *.bbl
 *.blg
 *.hdf5
+*.bcf
+*.xml
