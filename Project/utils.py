@@ -2,7 +2,7 @@ import torch as t
 import torch.nn as nn
 import torch.optim as optim
 
-def return_model(arch_vals, activation, init='random'):
+def return_model(arch_vals, activation, init, last_layer_active=False):
     activations = {'relu': nn.ReLU(True), 
                    'sigmoid': nn.Sigmoid(),
                    'tanh': nn.Tanh(),
@@ -13,15 +13,17 @@ def return_model(arch_vals, activation, init='random'):
         model.add_module('linear_{0}-{1}-{2}'.format(i, arch_vals[i], arch_vals[i+1]), nn.Linear(arch_vals[i], arch_vals[i+1]))
         if i != len(arch_vals) - 2:
             model.add_module('{0}_{1}'.format(activation, i), activations[activation])
+    if last_layer_active:
+        model.add_module('{0}_{1}'.format(activation, i+1), activations[activation])
 
     if init == 'xavier':
         for p in model.parameters():
             if len(p.size()) >= 2:
-                p.data = nn.init.xavier_uniform(p)
+                p.data = nn.init.xavier_uniform(p.data)
     elif init == 'he':
         for p in model.parameters():
             if len(p.size()) >= 2:
-                p.data = nn.init.kaiming_uniform(p)
+                p.data = nn.init.kaiming_uniform(p.data)
     return model
 
 def return_optimizer(optimizer, opt_params, model_params):

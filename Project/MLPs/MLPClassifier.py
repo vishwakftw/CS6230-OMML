@@ -19,6 +19,7 @@ p.add_argument('--opt_params', required=True, type=str, help='File containing pa
 p.add_argument('--maxiter', default=int(5e04), type=int, help='Maximum iterations')
 p.add_argument('--architecture', required=True, type=str, help='CSV file with number of nodes per layer')
 p.add_argument('--activation', default='relu', type=str, help='Activation function to be used')
+p.add_argument('--init', default='random', type=str, help='Initialization scheme to use --> random | he | xavier')
 p.add_argument('--dataset', required=True, type=str, help='Dataset to use --> mnist | cifar10 | svhn')
 p.add_argument('--dataroot', default='./', type=str, help='Data root folder')
 p.add_argument('--cuda', default=-1, type=int, help='Enter CUDA device (> 0), or -1 if no CUDA')
@@ -50,15 +51,15 @@ elif p.dataset == 'svhn':
                                           transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)), 
                                           transforms.Lambda(lambda x: x.view(3072))
                                         ])
-    tr_dset = SVHN(root=p.dataroot, train=True, transform=transformations, download=True)
-    te_dset = SVHN(root=p.dataroot, train=False, transform=transformations, download=True)
+    tr_dset = SVHN(root=p.dataroot, split='train', transform=transformations, download=True)
+    te_dset = SVHN(root=p.dataroot, split='test', transform=transformations, download=True)
                                     
 tr_d_loader = DataLoader(dataset=tr_dset, batch_size=64, shuffle=True)
 te_d_loader = DataLoader(dataset=te_dset, batch_size=5000, shuffle=True)
 
 # Build MLP architecture
 arch_vals = np.genfromtxt(p.architecture, delimiter=',').reshape(-1).astype(int).tolist()
-model = return_model(arch_vals, p.activation)
+model = return_model(arch_vals, p.activation, init=p.init)
 print(model)
 
 if p.cuda != -1:
@@ -74,13 +75,13 @@ if p.cuda != -1:
     loss_fn = loss_fn.cuda()
 
 optimizer_params = json.load(open(p.opt_params))
-params = [p.opt]
+params = [p.dataset, p.opt]
 for k in sorted(list(optimizer_params)):
     params.append(optimizer_params[k])
 for k in arch_vals:
-    params.append(arch_vals)
+    params.append(k)
 
-loss_log = open('loss_{0}_{1}_{2}.txt'.format(arch_vals, p.opt, json.load(open(p.opt_params))), 'w')
+loss_log = open('loss_classifier_{0}.txt'.format(params), 'w')
 
 flag = False
 iters = 0
