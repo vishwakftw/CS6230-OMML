@@ -4,10 +4,10 @@ import numpy as np
 import torch.nn as nn
 from torchvision import transforms
 from argparse import ArgumentParser
-from torchvision.datasets import MNIST
 from torch.utils.data import DataLoader
 from torch.autograd import Variable as V
 from utils import return_model, return_optimizer
+from torchvision.datasets import MNIST, CIFAR10, SVHN
 
 np.random.seed(29)
 t.manual_seed(29)
@@ -19,6 +19,7 @@ p.add_argument('--opt_params', required=True, type=str, help='File containing pa
 p.add_argument('--maxiter', default=int(5e04), type=int, help='Maximum iterations')
 p.add_argument('--architecture', required=True, type=str, help='CSV file with number of nodes per layer')
 p.add_argument('--activation', default='relu', type=str, help='Activation function to be used')
+p.add_argument('--dataset', required=True, type=str, help='Dataset to use --> mnist | cifar10 | svhn')
 p.add_argument('--dataroot', default='./', type=str, help='Data root folder')
 p.add_argument('--cuda', default=-1, type=int, help='Enter CUDA device (> 0), or -1 if no CUDA')
 p = p.parse_args()
@@ -28,12 +29,30 @@ if p.cuda != -1:
     t.cuda.set_device(p.cuda)
 
 # Load the data
-transformations = transforms.Compose([transforms.ToTensor(), 
-                                      transforms.Normalize((0.5,), (0.5,)), 
-                                      transforms.Lambda(lambda x: x.view(784))
-                                    ])
-tr_dset = MNIST(root=p.dataroot, train=True, transform=transformations, download=True)
-te_dset = MNIST(root=p.dataroot, train=False, transform=transformations, download=True)
+if p.dataset == 'mnist':
+    transformations = transforms.Compose([transforms.ToTensor(), 
+                                          transforms.Normalize((0.5,), (0.5,)), 
+                                          transforms.Lambda(lambda x: x.view(784))
+                                        ])
+    tr_dset = MNIST(root=p.dataroot, train=True, transform=transformations, download=True)
+    te_dset = MNIST(root=p.dataroot, train=False, transform=transformations, download=True)
+
+elif p.dataset == 'cifar10':
+    transformations = transforms.Compose([transforms.ToTensor(), 
+                                          transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)), 
+                                          transforms.Lambda(lambda x: x.view(3072))
+                                        ])
+    tr_dset = CIFAR10(root=p.dataroot, train=True, transform=transformations, download=True)
+    te_dset = CIFAR10(root=p.dataroot, train=False, transform=transformations, download=True)
+
+elif p.dataset == 'svhn':
+    transformations = transforms.Compose([transforms.ToTensor(), 
+                                          transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)), 
+                                          transforms.Lambda(lambda x: x.view(3072))
+                                        ])
+    tr_dset = SVHN(root=p.dataroot, train=True, transform=transformations, download=True)
+    te_dset = SVHN(root=p.dataroot, train=False, transform=transformations, download=True)
+                                    
 tr_d_loader = DataLoader(dataset=tr_dset, batch_size=64, shuffle=True)
 te_d_loader = DataLoader(dataset=te_dset, batch_size=5000, shuffle=True)
 
