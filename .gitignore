@@ -20,7 +20,8 @@
 *.html
 *data*
 *.meta
-test_batch # from CIFAR10
+*test*
+*train*
 
 # Python and I-Python checkpoints
 *.pyc
