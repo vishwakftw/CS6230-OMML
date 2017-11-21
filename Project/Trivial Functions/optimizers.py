@@ -29,7 +29,7 @@ def CM(t, X, G, V, m, lr):
     update = X + velocity
     return timestep, update, velocity
 
-def Adam(t, X, G, FM, SM, betas, lr, eps=1e-08):
+def Adam(t, X, G, FM, SM, betas=(0.9, 0.99), lr, eps=1e-08):
     """
         Function to perform one Adam step
         Args:
@@ -49,3 +49,54 @@ def Adam(t, X, G, FM, SM, betas, lr, eps=1e-08):
     vh = SM/(1 - betas[1]**timestep)
     update = X - lr*mh/(np.sqrt(vh) + eps)
     return timestep, update, FM, SM
+
+def Adagrad(t, X, G, SSG, lr, eps=1e-08):
+    """
+        Function to perform one Adagrad step
+        Args:
+            t   => previous timestep
+            X   => Current point
+            G   => Gradient at current point
+            SSG => Sum of squared gradient till previous timestep
+            lr  => Learning Rate
+            eps => (optional, default=1e-08) Prevent divide by 0 error
+    """
+    timestep = t + 1
+    update = X - lr*G/(np.sqrt(SSG) + eps)
+    SSG = SSG + G*G
+    return timestep, update, SSG
+
+def Adadelta(t, X, G, EG, EDX, lr, rho=0.9, eps=1e-08):
+    """
+        Function to perform one Adadelta step
+        Args:
+            t   => previous timestep
+            X   => Current point
+            G   => Gradient at current point
+            EG  => Running average of squared gradients till previous timestep
+            EDX => Running average of squared updates till previous timestep
+            lr  => Learning Rate
+            eps => (optional, default=1e-08) Prevent divide by 0 error
+    """
+    timestep = t + 1
+    EG = rho*EG + (1 - rho)*G*G
+    delx = -np.sqrt(EDX + eps)*G/np.sqrt(EG + eps)
+    EDX = rho*EDX + (1 - rho)*delx*delx
+    update = X + delx
+    return timestep, update, EG, EDX
+
+def RMSprop(t, X, G, EG, lr, eps=1e-08):
+    """
+        Function to perform one Adadelta step
+        Args:
+            t   => previous timestep
+            X   => Current point
+            G   => Gradient at current point
+            EG  => Running average of squared gradients till previous timestep
+            lr  => Learning Rate
+            eps => (optional, default=1e-08) Prevent divide by 0 error
+    """
+    timestep = t + 1
+    EG = 0.9*EG + 0.1*G*G
+    update = X - lr*G/np.sqrt(EG + eps)
+    return timestep, update, EG

@@ -101,7 +101,7 @@ for i, itr in enumerate(te_d_loader):
     if p.cuda != -1:    
         x = x.cuda()
     x = V(x)
-    te_loss += loss_fn(model(x), x).data[0]*itr[0].size(0)
+    te_loss += loss_fn(model(x), x).data[0]*(itr[0].size(0))
     N += itr[0].size(0)
 te_loss = te_loss/N
 print('Test Error after {0} iterations with {1} is {2}'.format(p.maxiter, p.opt, round(te_loss, 5)))
