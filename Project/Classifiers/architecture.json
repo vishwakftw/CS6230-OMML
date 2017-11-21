@@ -1,0 +1,23 @@
+[
+    {
+        "type"      : "CONV",
+        "params"    : 
+                    {
+                        "in": 3,
+                        "out": 64,
+                        "kernel": 5,
+                        "stride": 1,
+                        "padding": 0
+                    },
+        "activation": "relu"
+    },
+    {
+        "type"      : "MLP",
+        "params"    :
+                    {
+                        "in": 100,
+                        "out": 200
+                    },
+        "activation": "sigmoid"
+    }
+]

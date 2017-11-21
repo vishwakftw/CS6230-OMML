@@ -6,7 +6,7 @@ from torchvision import transforms
 from argparse import ArgumentParser
 from torch.utils.data import DataLoader
 from torch.autograd import Variable as V
-from utils import return_model, return_optimizer
+from utils import Model, return_optimizer
 from torchvision.datasets import MNIST, CIFAR10, SVHN
 
 np.random.seed(29)
@@ -17,8 +17,7 @@ p = ArgumentParser()
 p.add_argument('--opt', required=True, type=str, help='Optimizer --> adam | adagrad | rmsprop | nag | cm')
 p.add_argument('--opt_params', required=True, type=str, help='File containing params in json format')
 p.add_argument('--maxiter', default=int(5e04), type=int, help='Maximum iterations')
-p.add_argument('--architecture', required=True, type=str, help='CSV file with number of nodes per layer')
-p.add_argument('--activation', default='relu', type=str, help='Activation function to be used')
+p.add_argument('--architecture', required=True, type=str, help='File containing architecture params in json format')
 p.add_argument('--init', default='random', type=str, help='Initialization scheme to use --> random | he | xavier')
 p.add_argument('--dataset', required=True, type=str, help='Dataset to use --> mnist | cifar10 | svhn')
 p.add_argument('--dataroot', default='./', type=str, help='Data root folder')
@@ -57,9 +56,8 @@ elif p.dataset == 'svhn':
 tr_d_loader = DataLoader(dataset=tr_dset, batch_size=64, shuffle=True)
 te_d_loader = DataLoader(dataset=te_dset, batch_size=5000, shuffle=True)
 
-# Build MLP architecture
-arch_vals = np.genfromtxt(p.architecture, delimiter=',').reshape(-1).astype(int).tolist()
-model = return_model(arch_vals, p.activation, init=p.init)
+# Build classifier architecture
+model = Model(json.load(open(p.architecture)), p.init)
 print(model)
 
 if p.cuda != -1:
