@@ -16,3 +16,9 @@ Coursework pertaining to CS6230 : Optimization Methods in Machine Learning offer
 ### Programming Assignment - 2
 + Partly theoretical as well: Karush-Kuhn-Tucker conditions, Strong convexity, Dual Formulation
 + Cost Sensitive SVM in CVXPY
+
+### Paper Presentation
++ **LaTeX** script for generating the slides used for presenting the paper [Newton-Type Methods for Non-Convex Optimization Under Inexact Hessian Information](https://arxiv.org/abs/1708.07164) by Peng Xu, Farbod Roosta-Khorasani and Michael W. Mahoney
+
+### Project
++ Empirical study of benefits of Adaptive Gradient Methods
