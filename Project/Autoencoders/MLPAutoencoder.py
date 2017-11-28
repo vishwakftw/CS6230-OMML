@@ -49,11 +49,12 @@ model = nn.Sequential()
 for i in range(0, len(arch_vals) - 1):
     model.add_module('linear_{0}-{1}-{2}'.format(i, arch_vals[i], arch_vals[i+1]), nn.Linear(arch_vals[i], arch_vals[i+1]))
     if len(arch_vals) % 2 == 1:
-        if i != (len(arch_vals) - 1)/2:
+        if i != (len(arch_vals) - 1)/2 and i != len(arch_vals) - 2:
             model.add_module('sigmoid_{0}'.format(i), nn.Sigmoid())
     else:
         if i != (len(arch_vals)/2 - 1):
             model.add_module('sigmoid_{0}'.format(i), nn.Sigmoid())
+model.add_module('sigmoid_{0}'.format(i+1), nn.Sigmoid())
 
 if p.init == 'xavier':
     for param in model.parameters():
