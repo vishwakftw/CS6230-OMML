@@ -31,8 +31,7 @@ if p.cuda != -1:
 # Load the data
 if p.dataset == 'mnist':
     transformations = transforms.Compose([transforms.ToTensor(), 
-                                          transforms.Normalize((0.5,), (0.5,)), 
-                                          transforms.Lambda(lambda x: x.view(784))
+                                          transforms.Normalize((0.5,), (0.5,)) 
                                         ])
     tr_dset = MNIST(root=p.dataroot, train=True, transform=transformations, download=True)
     te_dset = MNIST(root=p.dataroot, train=False, transform=transformations, download=True)
@@ -40,7 +39,6 @@ if p.dataset == 'mnist':
 elif p.dataset == 'cifar10':
     transformations = transforms.Compose([transforms.ToTensor(), 
                                           transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)), 
-                                          transforms.Lambda(lambda x: x.view(3072))
                                         ])
     tr_dset = CIFAR10(root=p.dataroot, train=True, transform=transformations, download=True)
     te_dset = CIFAR10(root=p.dataroot, train=False, transform=transformations, download=True)
@@ -48,7 +46,6 @@ elif p.dataset == 'cifar10':
 elif p.dataset == 'svhn':
     transformations = transforms.Compose([transforms.ToTensor(), 
                                           transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)), 
-                                          transforms.Lambda(lambda x: x.view(3072))
                                         ])
     tr_dset = SVHN(root=p.dataroot, split='train', transform=transformations, download=True)
     te_dset = SVHN(root=p.dataroot, split='test', transform=transformations, download=True)
@@ -58,6 +55,7 @@ te_d_loader = DataLoader(dataset=te_dset, batch_size=5000, shuffle=True)
 
 # Build classifier architecture
 model = Model(json.load(open(p.architecture)), p.init)
+model.set_batch_size(64)
 print(model)
 
 if p.cuda != -1:
@@ -76,8 +74,7 @@ optimizer_params = json.load(open(p.opt_params))
 params = [p.dataset, p.opt]
 for k in sorted(list(optimizer_params)):
     params.append(optimizer_params[k])
-for k in arch_vals:
-    params.append(k)
+params.append(p.architecture[:-5])
 
 loss_log = open('loss_classifier_{0}.txt'.format(params), 'w')
 
@@ -105,6 +102,7 @@ while flag != True:
         iters += 1
 
 model.eval()
+model.set_batch_size(5000)
 tr_d_loader = DataLoader(dataset=tr_dset, batch_size=5000, shuffle=True)
 N = 0
 accuracy = 0
