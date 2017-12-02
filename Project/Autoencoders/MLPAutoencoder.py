@@ -79,14 +79,14 @@ if p.cuda != -1:
     loss_fn = loss_fn.cuda()
 
 optimizer_params = json.load(open(p.opt_params))
-params = [p.dataset, p.opt]
+params = [p.dataset]
 for k in sorted(list(optimizer_params)):
     params.append(optimizer_params[k])
 for k in arch_vals:
     params.append(k)
 params += ['sigmoid', p.init]
 
-loss_log = open('loss_autoencoder_{0}.txt'.format(params), 'w')
+loss_log = open('./{0}/loss_autoencoder_{1}.txt'.format(p.opt, params), 'w')
 
 flag = False
 iters = 0
