@@ -1,10 +1,24 @@
 import sys
+import os, errno
 import numpy as np
 import functions as f
 import gradients as g
 import optimizers as o
 from argparse import ArgumentParser as AP
-import os, errno
+
+def give_init(function_name):
+    if function_name == 'B1':
+        return np.array([-75, 50])
+    elif function_name == 'B2':
+        return np.array([50, -50])
+    elif function_name == 'B3':
+        return np.array([-50, 50])
+    elif function_name == 'BL':
+        return np.array([1, 2])
+    elif function_name == 'RB':
+        return np.array([-2.1, 2.1])
+    elif function_name == 'ST':
+        return np.array([0, 0])
 
 p = AP()
 p.add_argument('--optim', required=True, help='Optimizers: GD | CM | Adam | Adagrad | Adadelta | RMSprop')
@@ -12,33 +26,36 @@ p.add_argument('--fn', required=True, help='Function name: B1 | B2 | B3 | BL | R
 p.add_argument('--iter', default=250, type=int, help='Number of iterations to run for')
 p = p.parse_args()
 
-i = 0
-X = np.full(2, 2)
 
-learning_rates = np.logspace(-4, -2, 12)
-
-newDir = p.fn + '/' + p.optim
+newDir = os.path.join(p.fn, p.optim)
 try:
     os.makedirs(newDir)
 except OSError as e:
     if e.errno != errno.EEXIST:
         raise
 
-
 if p.optim == 'GD':
+    learning_rates = np.around(np.logspace(-4, -2.5, 12), decimals=5)
     for lr in learning_rates:
+        i = 0
+        X = give_init(p.fn)
         log_file = open('{0}/log_{1}_{2}.txt'.format(newDir, lr, p.fn), 'w')
         while i < p.iter:
+            log_file.write('{0}\t{1}\n'.format(i, f._func_dicts[p.fn](X)))
             G = g._grad_dicts[p.fn](X)
             i, X = o._opt_dicts[p.optim](i, X, G, lr)
         log_file.close()
 
 elif p.optim == 'CM':
     v = 0
-    m = 0.95
+    m = 0.925
+    learning_rates = np.around(np.logspace(-4, -2.5, 12), decimals=5)
     for lr in learning_rates:
+        i = 0
+        X = give_init(p.fn)
         log_file = open('{0}/log_{1}_{2}.txt'.format(newDir, lr, p.fn), 'w')
         while i < p.iter:
+            log_file.write('{0}\t{1}\n'.format(i, f._func_dicts[p.fn](X)))
             G = g._grad_dicts[p.fn](X)
             i, X, v = o._opt_dicts[p.optim](i, X, G, v, lr, m)
         log_file.close()
@@ -46,7 +63,10 @@ elif p.optim == 'CM':
 elif p.optim == 'Adam':
     fm = 0
     sm = 0
+    learning_rates = np.around(np.logspace(-4, -1.5, 18), decimals=5)
     for lr in learning_rates:
+        i = 0
+        X = give_init(p.fn)
         log_file = open('{0}/log_{1}_{2}.txt'.format(newDir, lr, p.fn), 'w')
         while i < p.iter:
             log_file.write('{0}\t{1}\n'.format(i, f._func_dicts[p.fn](X)))
@@ -56,7 +76,10 @@ elif p.optim == 'Adam':
 
 elif p.optim == 'Adagrad':
     ssg = 0
+    learning_rates = np.around(np.logspace(-4, -1.5, 18), decimals=5)
     for lr in learning_rates:
+        i = 0
+        X = give_init(p.fn)
         log_file = open('{0}/log_{1}_{2}.txt'.format(newDir, lr, p.fn), 'w')
         while i < p.iter:
             log_file.write('{0}\t{1}\n'.format(i, f._func_dicts[p.fn](X)))
@@ -67,7 +90,10 @@ elif p.optim == 'Adagrad':
 elif p.optim == 'Adadelta':
     eg = 0
     edx = 0
+    learning_rates = np.around(np.logspace(-4, -1.5, 18), decimals=5)
     for lr in learning_rates:
+        i = 0
+        X = give_init(p.fn)
         log_file = open('{0}/log_{1}_{2}.txt'.format(newDir, lr, p.fn), 'w')
         while i < p.iter:
             log_file.write('{0}\t{1}\n'.format(i, f._func_dicts[p.fn](X)))
@@ -77,14 +103,13 @@ elif p.optim == 'Adadelta':
 
 elif p.optim == 'RMSprop':
     eg = 0
+    learning_rates = np.around(np.logspace(-4, -1.5, 18), decimals=5)
     for lr in learning_rates:
+        i = 0
+        X = give_init(p.fn)
         log_file = open('{0}/log_{1}_{2}.txt'.format(newDir, lr, p.fn), 'w')
         while i < p.iter:
             log_file.write('{0}\t{1}\n'.format(i, f._func_dicts[p.fn](X)))
             G = g._grad_dicts[p.fn](X)
-            i, X, eg = o._opt_dicts[p.optim](i, X, G, egC, lr)
+            i, X, eg = o._opt_dicts[p.optim](i, X, G, eg, lr)
         log_file.close()
-
-
-
-
