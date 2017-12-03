@@ -47,10 +47,10 @@ if p.optim == 'GD':
         log_file.close()
 
 elif p.optim == 'CM':
-    v = 0
-    m = 0.925
     learning_rates = np.around(np.logspace(-4, -2.5, 12), decimals=5)
     for lr in learning_rates:
+        v = 0
+        m = 0.925
         i = 0
         X = give_init(p.fn)
         log_file = open('{0}/log_{1}_{2}.txt'.format(newDir, lr, p.fn), 'w')
@@ -61,10 +61,10 @@ elif p.optim == 'CM':
         log_file.close()
 
 elif p.optim == 'Adam':
-    fm = 0
-    sm = 0
     learning_rates = np.around(np.logspace(-4, -1.5, 18), decimals=5)
     for lr in learning_rates:
+        fm = 0
+        sm = 0
         i = 0
         X = give_init(p.fn)
         log_file = open('{0}/log_{1}_{2}.txt'.format(newDir, lr, p.fn), 'w')
@@ -88,10 +88,10 @@ elif p.optim == 'Adagrad':
         log_file.close()
 
 elif p.optim == 'Adadelta':
-    eg = 0
-    edx = 0
     learning_rates = np.around(np.logspace(-4, -1.5, 18), decimals=5)
     for lr in learning_rates:
+        eg = 0
+        edx = 0
         i = 0
         X = give_init(p.fn)
         log_file = open('{0}/log_{1}_{2}.txt'.format(newDir, lr, p.fn), 'w')
@@ -102,9 +102,9 @@ elif p.optim == 'Adadelta':
         log_file.close()
 
 elif p.optim == 'RMSprop':
-    eg = 0
     learning_rates = np.around(np.logspace(-4, -1.5, 18), decimals=5)
     for lr in learning_rates:
+        eg = 0
         i = 0
         X = give_init(p.fn)
         log_file = open('{0}/log_{1}_{2}.txt'.format(newDir, lr, p.fn), 'w')
