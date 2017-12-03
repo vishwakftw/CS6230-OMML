@@ -75,9 +75,9 @@ elif p.optim == 'Adam':
         log_file.close()
 
 elif p.optim == 'Adagrad':
-    ssg = 0
-    learning_rates = np.around(np.logspace(-4, -1.5, 18), decimals=5)
+    learning_rates = np.around(np.logspace(-4, 0, 30), decimals=5)
     for lr in learning_rates:
+        ssg = 0
         i = 0
         X = give_init(p.fn)
         log_file = open('{0}/log_{1}_{2}.txt'.format(newDir, lr, p.fn), 'w')
@@ -88,7 +88,7 @@ elif p.optim == 'Adagrad':
         log_file.close()
 
 elif p.optim == 'Adadelta':
-    learning_rates = np.around(np.logspace(-4, -1.5, 18), decimals=5)
+    learning_rates = np.around(np.logspace(-4, 0, 30), decimals=5)
     for lr in learning_rates:
         eg = 0
         edx = 0

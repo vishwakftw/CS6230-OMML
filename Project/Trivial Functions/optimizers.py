@@ -62,8 +62,8 @@ def Adagrad(t, X, G, SSG, lr, eps=1e-08):
             eps => (optional, default=1e-08) Prevent divide by 0 error
     """
     timestep = t + 1
-    update = X - lr*G/(np.sqrt(SSG) + eps)
     SSG = SSG + G*G
+    update = X - lr*G/(np.sqrt(SSG) + eps)
     return timestep, update, SSG
 
 def Adadelta(t, X, G, EG, EDX, lr, rho=0.9, eps=1e-08):
