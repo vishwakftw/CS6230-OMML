@@ -54,18 +54,18 @@ def BL(X):
     """
     x = X[0]
     y = X[1]
-	cmn1	= 2*(1.5 - x + x*y)
-	cmn2	= 2*(2.25 - x + x*y**2)
-	cmn3	= 2*(2.625 - x + x*y**3)
-	tmx1	= -1 + y
-	tmx2	= -1 + y**2
-	tmx3	= -1 + y**3
-	tmy1	= x
-	tmy2	= 2*x*y
-	tmy3	= 3*x*y**2
-	dx	= cmn1*tmx1 + cmn2*tmx2 + cmn3*tmx3
-	dy	= cmn1*tmy1 + cmn2*tmy2 + cmn3*tmy3
-	return np.array([dx, dy])
+    cmn1    = 2*(1.5 - x + x*y)
+    cmn2    = 2*(2.25 - x + x*y**2)
+    cmn3    = 2*(2.625 - x + x*y**3)
+    tmx1    = -1 + y
+    tmx2    = -1 + y**2
+    tmx3    = -1 + y**3
+    tmy1    = x
+    tmy2    = 2*x*y
+    tmy3    = 3*x*y**2
+    dx  = cmn1*tmx1 + cmn2*tmx2 + cmn3*tmx3
+    dy  = cmn1*tmy1 + cmn2*tmy2 + cmn3*tmy3
+    return np.array([dx, dy])
 
 def ST(X):
     """
