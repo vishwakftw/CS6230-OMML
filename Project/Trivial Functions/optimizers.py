@@ -13,7 +13,7 @@ def GD(t, X, G, lr):
     update = X - lr*G
     return timestep, update
 
-def CM(t, X, G, V, m, lr):
+def CM(t, X, G, V, lr, m):
     """
         Function to perform one Classical Momentum step
         Args:
@@ -29,7 +29,7 @@ def CM(t, X, G, V, m, lr):
     update = X + velocity
     return timestep, update, velocity
 
-def Adam(t, X, G, FM, SM, betas=(0.9, 0.99), lr, eps=1e-08):
+def Adam(t, X, G, lr, FM, SM, betas=(0.9, 0.99), eps=1e-08):
     """
         Function to perform one Adam step
         Args:
