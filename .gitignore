@@ -26,3 +26,6 @@
 # Python and I-Python checkpoints
 *.pyc
 .ipynb_checkpoints
+
+# Remove log files
+log*
