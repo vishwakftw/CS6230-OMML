@@ -23,7 +23,7 @@ def give_init(function_name):
 p = AP()
 p.add_argument('--optim', required=True, help='Optimizers: GD | CM | Adam | Adagrad | Adadelta | RMSprop')
 p.add_argument('--fn', required=True, help='Function name: B1 | B2 | B3 | BL | RB | ST')
-p.add_argument('--iter', default=250, type=int, help='Number of iterations to run for')
+p.add_argument('--iter', default=1000, type=int, help='Number of iterations to run for')
 p = p.parse_args()
 
 

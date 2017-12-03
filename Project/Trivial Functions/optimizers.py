@@ -80,7 +80,7 @@ def Adadelta(t, X, G, EG, EDX, lr, rho=0.9, eps=1e-08):
     """
     timestep = t + 1
     EG = rho*EG + (1 - rho)*G*G
-    delx = -np.sqrt(EDX + eps)*G/np.sqrt(EG + eps)
+    delx = -lr*np.sqrt(EDX + eps)*G/np.sqrt(EG + eps)
     EDX = rho*EDX + (1 - rho)*delx*delx
     update = X + delx
     return timestep, update, EG, EDX
