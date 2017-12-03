@@ -8,7 +8,7 @@ import numpy as np
 # BL -> Beale's Function
 # ST -> Styblinsky-Tang's Function
 
-def B0(X):
+def B1(X):
     """
         Returns gradient of Bohachevsky Function 1 at a point
     """
@@ -18,7 +18,7 @@ def B0(X):
     dy = 4*y + 4.0*np.pi*0.4*np.sin(4.0*np.pi*y)
     return np.array([dx, dy])
 
-def B1(X):
+def B2(X):
     """
         Returns gradient of Bohachevsky Function 2 at a point
     """
@@ -28,7 +28,7 @@ def B1(X):
     dy = 4*y + 4.0*np.pi*0.4*np.sin(4.0*np.pi*y)*np.cos(3.0*np.pi*x)
     return np.array([dx, dy])
 
-def B2(X):
+def B3(X):
     """
         Returns gradient of Bohachevsky Function 3 at a point
     """
@@ -75,3 +75,6 @@ def ST(X):
     y = X[1]
     dx = 4*x**3 - 32*x + 5
     dy = 4*y**3 - 32*y + 5
+    return np.array([dx, dy])
+
+_grad_dicts = {'B1': B1, 'B2': B2, 'B3': B3, 'RB': RB, 'BL': BL, 'ST': ST}

@@ -58,3 +58,5 @@ def ST(X):
     x = X[0]
     y = X[1]
     return x*4 - 16*(x**2) + 5*x + y**4 - 16*(y**2) + 5*y
+
+_func_dicts = {'B1': B1, 'B2': B2, 'B3': B3, 'RB': RB, 'BL': BL, 'ST': ST}

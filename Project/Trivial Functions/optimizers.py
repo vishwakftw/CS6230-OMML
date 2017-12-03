@@ -100,3 +100,5 @@ def RMSprop(t, X, G, EG, lr, eps=1e-08):
     EG = 0.9*EG + 0.1*G*G
     update = X - lr*G/np.sqrt(EG + eps)
     return timestep, update, EG
+
+_opt_dicts = {'GD': GD, 'CM': CM, 'Adam': Adam, 'Adagrad': Adagrad, 'Adadelta': Adadelta, 'RMSprop': RMSprop}
