@@ -1,0 +1,28 @@
+[
+    {
+        "type"      : "MLP",
+        "params"    :
+                    {
+                        "in": 3072,
+                        "out": 1000
+                    },
+        "activation": "relu"
+    },
+    {
+        "type"      : "MLP",
+        "params"    :
+                    {
+                        "in": 1000,
+                        "out": 500
+                    },
+        "activation": "relu"
+    },
+    {
+        "type"      : "MLP",
+        "params"    :
+                    {
+                        "in": 500,
+                        "out": 10
+                    }
+    }
+]

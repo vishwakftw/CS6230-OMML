@@ -51,8 +51,9 @@ class Model(nn.Module):
                     p.data = nn.init.kaiming_uniform(p.data)
 
     def forward(self, input):
+        pass_ = input
         if self.conv_part is not None:
-            pass_ = self.conv_part(input)
+            pass_ = self.conv_part(pass_)
         pass_ = pass_.view(self.batch_size, -1)
         if self.mlp_part is not None:
             pass_ = self.mlp_part(pass_)

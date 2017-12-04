@@ -55,7 +55,6 @@ te_d_loader = DataLoader(dataset=te_dset, batch_size=5000, shuffle=True)
 
 # Build classifier architecture
 model = Model(json.load(open(p.architecture)), p.init)
-model.set_batch_size(64)
 print(model)
 
 if p.cuda != -1:
@@ -74,9 +73,9 @@ optimizer_params = json.load(open(p.opt_params))
 params = [p.dataset, p.opt]
 for k in sorted(list(optimizer_params)):
     params.append(optimizer_params[k])
-params.append(p.architecture[:-5])
+params.append(p.architecture[-11:-5])
 
-loss_log = open('loss_classifier_{0}.txt'.format(params), 'w')
+loss_log = open('./{0}/loss_classifier_{1}.txt'.format(p.opt, params), 'w')
 
 flag = False
 iters = 0
@@ -88,6 +87,7 @@ while flag != True:
             x = x.cuda()
             y = y.cuda()
         x, y = V(x), V(y)
+        model.set_batch_size(x.size(0))
         cur_loss = loss_fn(model(x), y)
         loss_log.write('{0}\t{1}\n'.format(iters, round(cur_loss.data[0], 6)))
         if iters == p.maxiter:
@@ -112,6 +112,7 @@ for i, itr in enumerate(tr_d_loader):
         x = x.cuda()
         y = y.cuda()
     x, y = V(x), V(y)
+    model.set_batch_size(x.size(0))
     forward_pass = model(x)
     maxes, pred_y = forward_pass.max(1)
     pred_y = pred_y.view(-1)
@@ -129,6 +130,7 @@ for i, itr in enumerate(te_d_loader):
         x = x.cuda()
         y = y.cuda()
     x, y = V(x), V(y)
+    model.set_batch_size(x.size(0))
     forward_pass = model(x)
     maxes, pred_y = forward_pass.max(1)
     pred_y = pred_y.view(-1)
