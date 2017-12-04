@@ -1,0 +1,84 @@
+\documentclass[10pt]{beamer}
+\usepackage[style=verbose,backend=biber]{biblatex}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{bookmark}
+\usepackage{hyperref}
+\newcommand{\g}{\nabla}
+\newcommand{\xbold}{\mathbf{x}}
+\newcommand{\citecomma}{\({}^{{}_{,}}\)}
+%\documentclass{article}
+%\usepackage{beamerarticle}
+\usetheme{CambridgeUS}
+\addbibresource{main.bib}
+\renewcommand{\citesetup}{\tiny}
+
+\title[Analysis of AG Methods]{An Empirical Analysis of the Benefits of Adaptive Gradient Methods}
+\subtitle{Project done as a part of \\
+CS6230 - Optimization Methods in Machine Learning}
+
+\author{Vishwak Srinivasan \and Ayushi Patel}
+
+\begin{document}
+\begin{frame}
+\titlepage
+\end{frame}
+
+\begin{frame}{Outline}
+\tableofcontents
+\end{frame}
+
+\section{Introduction}
+\subsection{Gradient Descent}
+\begin{frame}{Gradient Descent}
+\begin{itemize}
+\item<1->{Gradient Descent (GD) - based methods have been a staple approach used for optimization
+          in both convex and non-convex problems for many years now.
+          \begin{itemize}
+          \item<2->{Huge success attributed to the simplicity of the method}
+          \end{itemize}
+         }
+\item<3->{Start with a random initialization, and follow the direction of descent.
+          \begin{itemize}
+          \item<4->{Direction of descent given by the negative of the gradient of a particular point.}
+          \end{itemize}
+         }
+\uncover<5->{\[\xbold := \xbold - \eta \g f(\xbold)\]}
+\end{itemize}
+\end{frame}
+
+\subsection{Modifications to Gradient Descent}
+\begin{frame}{Modifications to Gradient Descent}
+\begin{itemize}
+\item<1->{Polyak and Nesterov have proposed methods which \textit{provide an acceleration} to the updates. % add citations
+          \begin{itemize}
+          \item<2->{Collectively called \textbf{momentum based methods}}
+          \end{itemize}
+         }
+\item<3->{Gradient descent is used as \textit{mini-batch gradient descent} in practice, which leads
+          to \textit{variance in the calculated mini-batch gradients}. Methods like SVRG, SAG and % add citations
+          SDCA have been proposed to help solve this problem.
+          \begin{itemize}
+          \item<4->{Collectively called \textbf{variance reduction methods}}
+          \end{itemize}
+         }
+\item<5->{Choice of learning rate is cumbersome process in gradient based methods. Methods like Adam,
+          Adagrad, Adadelta, RMSprop and so on \textit{adapt the learning rate} through the updates. % add citations
+          \begin{itemize}
+          \item<6->{Collectively called \textbf{adaptive gradient methods}}
+          \end{itemize}
+         }
+\end{itemize}
+\end{frame}
+
+\section{Adaptive Gradient Methods}
+\begin{frame}{Introduction to Adaptive Gradient Methods}
+\uncover<1->{General form of any adaptive gradient method is: \[\xbold_{t+1} := \xbold - \eta_{t}\g_{\xbold_{t}} f(\xbold_{t})\] where \(\xbold_{t}\) is the value of \(\xbold\) at iteration \(t\)}
+\(\newline\)
+
+\uncover<2->{Key idea of any adaptive gradient method is to \textit{modify the learning rate} based on previous updates. Following slides will discuss some ``well-known'' adaptive gradient methods used in practice briefly.}
+\end{frame}
+
+
+
+\end{document}
