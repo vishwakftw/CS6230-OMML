@@ -131,5 +131,68 @@ where \(\epsilon\) is a small value to prevent divide by zero errors
 }
 \end{frame}
 
+\section{Our work}
+\begin{frame}{Our work}
+\begin{itemize}
+\item<2->{Implementation of Polyak's heavy ball method(CM), Adagrad, Adadelta, Adam, RMSprop, effectively creating a suite of first-order optimization methods.
+          \begin{itemize}
+          \item<2->{Implemented in NumPy\footfullcite{numpy}}
+          \end{itemize}}
+\item<3->{Analyzing behaviour of GD, CM, Adagrad, Adadelta, Adam, RMSprop on selected pathological test functions for optimization}
+\item<4->{Experiments on Deep Neural Networks - Multi-layer perceptrons, Autoencoders and Generative Adversarial Networks\footfullcite{gan}}
+\end{itemize}
+\end{frame}
 
+\subsection{Pathological Functions}
+\begin{frame}{Functions which were used}
+For our initial experiments, we chose 6 functions\footfullcite{test-funcs}:
+\begin{itemize}
+\item<1->{Bohachevsky's Functions 1, 2, 3}
+\item<2->{Beale's Function}
+\item<3->{Rosenbrock's Function}
+\item<4->{Styblinsky-Tang's Function}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Behaviour with Bohachevsky's Function 1}
+\begin{equation}
+\label{B1}
+f(\xbold) = x_{1}^{2} + 2x_{2}^{2} - 0.3\cos(3\pi x_{1}) - 0.4\cos(4\pi x_{2}) + 0.7
+\end{equation}
+\end{frame}
+
+\begin{frame}{Behaviour with Bohachevsky's Function 2}
+\begin{equation}
+\label{B2}
+f(\xbold) = x_{1}^{2} + 2x_{2}^{2} - 0.3\cos(3\pi x_{1})\cos(4\pi x_{2}) + 0.3
+\end{equation}
+\end{frame}
+
+\begin{frame}{Behaviour with Bohachevsky's Function 3}
+\begin{equation}
+\label{B3}
+f(\xbold) = x_{1}^{2} + 2x_{2}^{2} - 0.3\cos(3\pi x_{1} + 4\pi x_{2}) + 0.3
+\end{equation}
+\end{frame}
+
+\begin{frame}{Behaviour with Beale's Function}
+\begin{equation}
+\label{BL}
+f(\xbold) = (1.5 - x_{1} + x_{1}x_{2})^{2} + (2.25 - x_{1} + x_{1}x_{2}^{2})^{2} + (2.625 - x_{1} + x_{1}x_{2}^{3})^{2}
+\end{equation}
+\end{frame}
+
+\begin{frame}{Behaviour with Rosenbrock's Function}
+\begin{equation}
+\label{RB}
+f(\xbold;a=1, b=25) = (1 - x_{1})^{2} + 25(x_{2} - x_{1})^{2}
+\end{equation}
+\end{frame}
+
+\begin{frame}{Behaviour with Styblinsky-Tang's Function}
+\begin{equation}
+\label{ST}
+\displaystyle f(\xbold;n=2) = \sum_{i=1}^{n=2} x_{i}^{2} - 16x_{i}^{2} + 5x_{i}
+\end{equation}
+\end{frame}
 \end{document}
