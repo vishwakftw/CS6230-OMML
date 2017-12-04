@@ -24,10 +24,6 @@ CS6230 - Optimization Methods in Machine Learning}
 \titlepage
 \end{frame}
 
-\begin{frame}{Outline}
-\tableofcontents
-\end{frame}
-
 \section{Introduction}
 \subsection{Gradient Descent}
 \begin{frame}{Gradient Descent}
@@ -72,6 +68,7 @@ CS6230 - Optimization Methods in Machine Learning}
 \end{frame}
 
 \section{Adaptive Gradient Methods}
+\subsection{Introduction}
 \begin{frame}{Introduction to Adaptive Gradient Methods}
 \uncover<1->{General form of any adaptive gradient method is: \[\xbold_{t+1} := \xbold - \eta_{t}\g_{\xbold_{t}} f(\xbold_{t})\] where \(\xbold_{t}\) is the value of \(\xbold\) at iteration \(t\)}
 \(\newline\)
@@ -79,6 +76,60 @@ CS6230 - Optimization Methods in Machine Learning}
 \uncover<2->{Key idea of any adaptive gradient method is to \textit{modify the learning rate} based on previous updates. Following slides will discuss some ``well-known'' adaptive gradient methods used in practice briefly.}
 \end{frame}
 
+\subsection{Adagrad}
+\begin{frame}{Adagrad} % add citations
+\uncover<1->{Define: \[G_{t} \triangleq \mathrm{diag}\left(\displaystyle \sum_{i=0}^{t} \g f(\xbold_{i}) \odot \g f(\xbold_{i})\right)\]}
+\uncover<2->{Adagrad updates parameters based on the rule below:
+\begin{equation}
+\label{adagrad}
+\xbold_{t+1} = \xbold_{t} - \frac{\eta}{\sqrt{G_{t} + \epsilon}} \odot \g f(\xbold_{t})
+\end{equation}
+where \(\epsilon\) is a small value to prevent divide by zero errors
+}
+\end{frame}
+
+\subsection{Adadelta}
+\begin{frame}{Adadelta} % add citations
+\uncover<1->{Define: \[g_{t} \triangleq \g f(\xbold_{t}) \odot \g f(\xbold_{t})\]
+\[\mathbb{E}[g]_{t} \triangleq \rho\mathbb{E}[g]_{t-1} + (1 - \rho)g_{t}\]
+\[\Delta \xbold_{t} \triangleq -\eta\displaystyle\frac{\sqrt{\mathbb{E}[\Delta \xbold]_{t-1} + \epsilon}}{\sqrt{\mathbb{E}[g]_{t} + \epsilon}}\odot\g f(\xbold_{t})\]
+\[\mathbb{E}[\Delta \xbold]_{t} \triangleq \rho\mathbb{E}[\Delta \xbold]_{t-1} + (1 - \rho)\left(\Delta \xbold_{t} \odot \Delta \xbold_{t}\right)\]}
+\uncover<2->{Adadelta updates parameters based on the rule below:
+\begin{equation}
+\label{adadelta}
+\xbold_{t+1} = \xbold_{t} + \Delta \xbold_{t}
+\end{equation}
+where \(\epsilon\) is a small value to ensure stability/relieve divide by zero errors.
+}
+\end{frame}
+
+\subsection{Adam}
+\begin{frame}{Adam} % add citations
+\uncover<1->{Define: \[m_{t} \triangleq \beta_{1}m_{t-1} + (1 - \beta_{1})\g f(\xbold_{t}), \hspace{3mm} v_{t} \triangleq \beta_{2}v_{t-1} + (1 - \beta_{2})\left(\g (\xbold_{t}) \odot \g (\xbold_{t})\right)\]
+\[\hat{m}_{t} \triangleq \displaystyle \frac{m_{t}}{1 - \beta_{1}^{t}}, \hspace{3mm} \hat{v}_{t} \triangleq \displaystyle \frac{v_{t}}{1 - \beta_{2}^{t}}\]
+}
+\uncover<2->{Adam updates parameters based on the rule below:
+\begin{equation}
+\label{adam}
+\xbold_{t+1} = \xbold_{t} - \frac{\eta}{\sqrt{\hat{v}_{t}} + \epsilon} \odot \hat{m}_{t}
+\end{equation}
+where \(\epsilon\) is a small value to prevent divide by zero errors
+}
+\end{frame}
+
+\subsection{RMSProp}
+\begin{frame}{RMSProp} % add citations
+\uncover<1->{Define: \[g_{t} \triangleq \g f(\xbold_{t}) \odot \g f(\xbold_{t})\]
+\[\mathbb{E}[g]_{t} \triangleq 0.9\mathbb{E}[g]_{t-1} + 0.1g_{t}\]
+}
+\uncover<2->{RMSProp updates parameters based on the rule below:
+\begin{equation}
+\label{rmsprop}
+\xbold_{t+1} = \xbold_{t} - \frac{\eta}{\sqrt{\mathbb{E}[g]_{t} + \epsilon}} \odot \g f(\xbold_{t})
+\end{equation}
+where \(\epsilon\) is a small value to prevent divide by zero errors
+}
+\end{frame}
 
 
 \end{document}
