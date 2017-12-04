@@ -1,4 +1,6 @@
 \documentclass[10pt]{beamer}
+%\documentclass{article}
+%\usepackage{beamerarticle}
 \usepackage[style=verbose,backend=biber]{biblatex}
 \usepackage{amsmath}
 \usepackage{amssymb}
@@ -7,11 +9,9 @@
 \newcommand{\g}{\nabla}
 \newcommand{\xbold}{\mathbf{x}}
 \newcommand{\citecomma}{\({}^{{}_{,}}\)}
-%\documentclass{article}
-%\usepackage{beamerarticle}
 \usetheme{CambridgeUS}
 \addbibresource{main.bib}
-\renewcommand{\citesetup}{\tiny}
+\renewcommand{\footnotesize}{\tiny}
 
 \title[Analysis of AG Methods]{An Empirical Analysis of the Benefits of Adaptive Gradient Methods}
 \subtitle{Project done as a part of \\
@@ -46,14 +46,14 @@ CS6230 - Optimization Methods in Machine Learning}
 \subsection{Modifications to Gradient Descent}
 \begin{frame}{Modifications to Gradient Descent}
 \begin{itemize}
-\item<1->{Polyak and Nesterov have proposed methods which \textit{provide an acceleration} to the updates. % add citations
+\item<1->{Polyak\footfullcite{polyak} and Nesterov\footfullcite{nag} have proposed methods which \textit{provide an acceleration} to the updates.
           \begin{itemize}
           \item<2->{Collectively called \textbf{momentum based methods}}
           \end{itemize}
          }
 \item<3->{Gradient descent is used as \textit{mini-batch gradient descent} in practice, which leads
-          to \textit{variance in the calculated mini-batch gradients}. Methods like SVRG, SAG and % add citations
-          SDCA have been proposed to help solve this problem.
+          to \textit{variance in the calculated mini-batch gradients}. Methods like SVRG\footfullcite{svrg}, SAG\footfullcite{sag} and % add citations
+          SDCA\footfullcite{sdca} have been proposed to help solve this problem.
           \begin{itemize}
           \item<4->{Collectively called \textbf{variance reduction methods}}
           \end{itemize}
@@ -77,7 +77,7 @@ CS6230 - Optimization Methods in Machine Learning}
 \end{frame}
 
 \subsection{Adagrad}
-\begin{frame}{Adagrad} % add citations
+\begin{frame}{Adagrad\footfullcite{adagrad}} % add citations
 \uncover<1->{Define: \[G_{t} \triangleq \mathrm{diag}\left(\displaystyle \sum_{i=0}^{t} \g f(\xbold_{i}) \odot \g f(\xbold_{i})\right)\]}
 \uncover<2->{Adagrad updates parameters based on the rule below:
 \begin{equation}
@@ -89,7 +89,7 @@ where \(\epsilon\) is a small value to prevent divide by zero errors
 \end{frame}
 
 \subsection{Adadelta}
-\begin{frame}{Adadelta} % add citations
+\begin{frame}{Adadelta\footfullcite{adadelta}} % add citations
 \uncover<1->{Define: \[g_{t} \triangleq \g f(\xbold_{t}) \odot \g f(\xbold_{t})\]
 \[\mathbb{E}[g]_{t} \triangleq \rho\mathbb{E}[g]_{t-1} + (1 - \rho)g_{t}\]
 \[\Delta \xbold_{t} \triangleq -\eta\displaystyle\frac{\sqrt{\mathbb{E}[\Delta \xbold]_{t-1} + \epsilon}}{\sqrt{\mathbb{E}[g]_{t} + \epsilon}}\odot\g f(\xbold_{t})\]
@@ -104,7 +104,7 @@ where \(\epsilon\) is a small value to ensure stability/relieve divide by zero e
 \end{frame}
 
 \subsection{Adam}
-\begin{frame}{Adam} % add citations
+\begin{frame}{Adam\footfullcite{adam}} % add citations
 \uncover<1->{Define: \[m_{t} \triangleq \beta_{1}m_{t-1} + (1 - \beta_{1})\g f(\xbold_{t}), \hspace{3mm} v_{t} \triangleq \beta_{2}v_{t-1} + (1 - \beta_{2})\left(\g (\xbold_{t}) \odot \g (\xbold_{t})\right)\]
 \[\hat{m}_{t} \triangleq \displaystyle \frac{m_{t}}{1 - \beta_{1}^{t}}, \hspace{3mm} \hat{v}_{t} \triangleq \displaystyle \frac{v_{t}}{1 - \beta_{2}^{t}}\]
 }
@@ -118,7 +118,7 @@ where \(\epsilon\) is a small value to prevent divide by zero errors
 \end{frame}
 
 \subsection{RMSProp}
-\begin{frame}{RMSProp} % add citations
+\begin{frame}{RMSProp\footfullcite{rmsprop}} % add citations
 \uncover<1->{Define: \[g_{t} \triangleq \g f(\xbold_{t}) \odot \g f(\xbold_{t})\]
 \[\mathbb{E}[g]_{t} \triangleq 0.9\mathbb{E}[g]_{t-1} + 0.1g_{t}\]
 }
