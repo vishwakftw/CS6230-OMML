@@ -30,3 +30,4 @@
 # Remove log and iter files
 log*
 iter*
+loss*

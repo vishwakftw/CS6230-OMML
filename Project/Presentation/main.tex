@@ -138,7 +138,7 @@ where \(\epsilon\) is a small value to prevent divide by zero errors
           \begin{itemize}
           \item<2->{Implemented in NumPy\footfullcite{numpy}}
           \end{itemize}}
-\item<3->{Analyzing behaviour of GD, CM, Adagrad, Adadelta, Adam, RMSprop on selected pathological test functions for optimization}
+\item<3->{Analyzing behaviour of GD, CM, Adagrad, Adam and RMSprop on selected pathological test functions for optimization}
 \item<4->{Experiments on Deep Neural Networks - Multi-layer perceptrons, Autoencoders and Generative Adversarial Networks\footfullcite{gan}}
 \end{itemize}
 \end{frame}
@@ -158,6 +158,10 @@ For our initial experiments, we chose 5 functions\footfullcite{test-funcs}:
 \label{B1}
 f(\xbold) = x_{1}^{2} + 2x_{2}^{2} - 0.3\cos(3\pi x_{1}) - 0.4\cos(4\pi x_{2}) + 0.7
 \end{equation}
+\begin{figure}
+\centering
+\includegraphics[width=\linewidth]{./images/B1.eps}
+\end{figure}
 \end{frame}
 
 \begin{frame}{Behaviour with Bohachevsky's Function 2}
@@ -165,6 +169,10 @@ f(\xbold) = x_{1}^{2} + 2x_{2}^{2} - 0.3\cos(3\pi x_{1}) - 0.4\cos(4\pi x_{2}) +
 \label{B2}
 f(\xbold) = x_{1}^{2} + 2x_{2}^{2} - 0.3\cos(3\pi x_{1})\cos(4\pi x_{2}) + 0.3
 \end{equation}
+\begin{figure}
+\centering
+\includegraphics[width=\linewidth]{./images/B2.eps}
+\end{figure}
 \end{frame}
 
 \begin{frame}{Behaviour with Bohachevsky's Function 3}
@@ -172,6 +180,10 @@ f(\xbold) = x_{1}^{2} + 2x_{2}^{2} - 0.3\cos(3\pi x_{1})\cos(4\pi x_{2}) + 0.3
 \label{B3}
 f(\xbold) = x_{1}^{2} + 2x_{2}^{2} - 0.3\cos(3\pi x_{1} + 4\pi x_{2}) + 0.3
 \end{equation}
+\begin{figure}
+\centering
+\includegraphics[width=\linewidth]{./images/B3.eps}
+\end{figure}
 \end{frame}
 
 \begin{frame}{Behaviour with Beale's Function}
@@ -179,6 +191,10 @@ f(\xbold) = x_{1}^{2} + 2x_{2}^{2} - 0.3\cos(3\pi x_{1} + 4\pi x_{2}) + 0.3
 \label{BL}
 f(\xbold) = (1.5 - x_{1} + x_{1}x_{2})^{2} + (2.25 - x_{1} + x_{1}x_{2}^{2})^{2} + (2.625 - x_{1} + x_{1}x_{2}^{3})^{2}
 \end{equation}
+\begin{figure}
+\centering
+\includegraphics[width=\linewidth]{./images/BL.eps}
+\end{figure}
 \end{frame}
 
 \begin{frame}{Behaviour with Rosenbrock's Function}
@@ -186,6 +202,120 @@ f(\xbold) = (1.5 - x_{1} + x_{1}x_{2})^{2} + (2.25 - x_{1} + x_{1}x_{2}^{2})^{2}
 \label{RB}
 f(\xbold;a=1, b=25) = (1 - x_{1})^{2} + 25(x_{2} - x_{1})^{2}
 \end{equation}
+\begin{figure}
+\centering
+\includegraphics[width=\linewidth]{./images/RB.eps}
+\end{figure}
 \end{frame}
 
+\subsection{Deep Learning Experiments: MLP Classifiers}
+\begin{frame}{Multi-Layer Perceptron Classifiers}
+\begin{itemize}
+\item<1->{Took Multilayer perceptron classifiers for the MNIST\footnote{\url{http://yann.lecun.com/exdb/mnist/}} and CIFAR10\footnote{\url{https://www.cs.toronto.edu/~kriz/cifar.html}} datasets}
+\item<2->{Achieved \(\approx 95\%\) on MNIST and \(\approx 60\%\) on CIFAR10
+          \begin{itemize}
+          \item<3->{Not State-of-the-art, only to analyze the behaviour of the optimization methods}
+          \end{itemize}
+         }
+\item<3->{Activation used between the layers was \texttt{ReLU}}
+\item<4->{Trained for 10000 iterations, chose optimal learning rate from \(\{0.5, 0.2, 0.1, 0.05, 0.02, 0.01, 0.005, 0.002, 0.001, 0.0005, 0.0002, 0.0001\}\)}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{MNIST with Architecture: \texttt{784-500-500-500-10} - Training Loss vs Mini-batches}
+\begin{figure}
+\centering
+\includegraphics[width=\linewidth]{./images/mnist-1.pdf}
+\end{figure}
+\end{frame}
+
+\begin{frame}{MNIST with Architecture: \texttt{784-1000-1000-1000-10} - Training Loss vs Mini-batches}
+\begin{figure}
+\centering
+\includegraphics[width=\linewidth]{./images/mnist-2.pdf}
+\end{figure}
+\end{frame}
+
+\begin{frame}{CIFAR10 with Architecture: \texttt{3072-1000-500-10} - Training Loss vs Mini-batches}
+\begin{figure}
+\centering
+\includegraphics[width=\linewidth]{./images/cifar10-1.pdf}
+\end{figure}
+\end{frame}
+
+\begin{frame}{CIFAR10 with Architecture: \texttt{3072-1000-1000-1000-10} - Training Loss vs Mini-batches}
+\begin{figure}
+\centering
+\includegraphics[width=\linewidth]{./images/cifar10-2.pdf}
+\end{figure}
+\end{frame}
+
+\subsection{Deep Learning Experiments: Autoencoders}
+\begin{frame}{Deep Autoencoders}
+\begin{itemize}
+\item<1->{Used a multilayer perceptron deep autoencoder for encoding MNIST images}
+\item<2->{Activation used between the layers was \texttt{sigmoid}}
+\item<3->{Trained for 10000 iterations, chose optimal learning rate from \(\{0.5, 0.2, 0.1, 0.05, 0.02, 0.01, 0.005, 0.002, 0.001, 0.0005, 0.0002, 0.0001\}\)}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Autoencoder architecture: \texttt{784-1000-500-1000-10} - Training Loss vs Mini-batches}
+\begin{figure}
+\centering
+\includegraphics[width=\linewidth]{./images/auto-1.pdf}
+\end{figure}
+\end{frame}
+\begin{frame}{Autoencoder architecture: \texttt{784-1000-500-250-30-30-250-500-1000-10}\footfullcite{hinton} - Training Loss vs Mini-batches} % add citation
+\begin{figure}
+\centering
+\includegraphics[width=0.9\linewidth]{./images/auto-2.pdf}
+\end{figure}
+\end{frame}
+
+\subsection{Deep Learning Experiments: GANs}
+\begin{frame}{Deep Convolutional Generative Adversarial Networks\footfullcite{dcgan}} %add citation
+\begin{itemize}
+\item<1->{Used a specialized architecture for generator and discriminator for MNIST digits based on Deep Convolutional GANs}
+\item<2->{Run for 50000 iterations, and noted the variations of generator loss and discriminator loss with time for Adam optimizer and Nesterov's Accelerated Gradient}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Generator Loss with time}
+\begin{figure}
+\centering
+\includegraphics[width=\linewidth]{./images/genr-gan.pdf}
+\end{figure}
+\end{frame}
+\begin{frame}{Discriminator Loss with time}
+\begin{figure}
+\centering
+\includegraphics[width=\linewidth]{./images/disc-gan.pdf}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Quality of Images Generated}
+\begin{columns}
+\column{0.475\linewidth}
+\centering
+\textbf{Using ADAM optimizer}
+\includegraphics[width=0.75\textwidth]{./images/adam-dcgan.png}
+\column{0.475\linewidth}
+\centering
+\textbf{Using Accelerated Gradient}
+\includegraphics[width=0.75\textwidth]{./images/nag-dcgan.png}
+\end{columns}
+\end{frame}
+
+\section{Conclusion}
+\begin{frame}{Our conclusions from the experiments conducted}
+\begin{itemize}
+\item<1->{Experiments show that adaptive gradient methods in fact, only have a marginal benefit}
+\item<2->{This concurs with the claim put forward by Wilson \textit{et al}\footfullcite{marginaladaptivegradients} about the marginal benefits of Adaptive Gradient Methods}
+\item<3->{Hype or Hallelujah? \emph{Hype} it is!!}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\Huge{Thank You\footnote{Code Available at \url{https://github.com/vishwakftw/CS6230-OML}}}
+\end{frame}
 \end{document}

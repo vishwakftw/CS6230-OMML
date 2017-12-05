@@ -27,7 +27,7 @@ opt_params = opt_params[opt_params[:,0] == cur_func]
 title = ''
 for i in range(0, opt_params.shape[0]):
     iterates = np.genfromtxt('{0}/{1}/iter_{2}_{0}.txt'.format(cur_func, opt_params[i,1], opt_params[i,2]))
-    plt.plot(iterates[:,0], iterates[:,1], color=color_dict[opt_params[i,1]], label=opt_params[i,1], linewidth=2.5)
+    plt.plot(iterates[:,0], iterates[:,1], color=color_dict[opt_params[i,1]], label=opt_params[i,1], linewidth=3.5)
     title = title + '{0}: {1}   '.format(opt_params[i,1], iterates[-1])
 plt.title(title)
 plt.legend(loc='upper right')

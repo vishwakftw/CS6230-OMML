@@ -1,5 +1,5 @@
 import torch as t
-import gan_utils as u
+import gan_util as u
 import torch.nn as nn
 import torch.utils.data as d_utils
 import torchvision.utils as tv_utils
