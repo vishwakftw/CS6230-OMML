@@ -51,12 +51,4 @@ def BL(X):
     term3 = (2.625 - x + x*y**3)**2
     return term1 + term2 + term3
 
-def ST(X):
-    """
-        Returns Styblinsky-Tang's function at a point
-    """
-    x = X[0]
-    y = X[1]
-    return x*4 - 16*(x**2) + 5*x + y**4 - 16*(y**2) + 5*y
-
-_func_dicts = {'B1': B1, 'B2': B2, 'B3': B3, 'RB': RB, 'BL': BL, 'ST': ST}
+_func_dicts = {'B1': B1, 'B2': B2, 'B3': B3, 'RB': RB, 'BL': BL}

@@ -27,5 +27,6 @@
 *.pyc
 .ipynb_checkpoints
 
-# Remove log files
+# Remove log and iter files
 log*
+iter*

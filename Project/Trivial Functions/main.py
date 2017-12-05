@@ -8,21 +8,19 @@ from argparse import ArgumentParser as AP
 
 def give_init(function_name):
     if function_name == 'B1':
-        return np.array([-75, 50])
+        return np.array([-20, 10])
     elif function_name == 'B2':
-        return np.array([50, -50])
+        return np.array([10, -10])
     elif function_name == 'B3':
-        return np.array([-50, 50])
+        return np.array([-10, 10])
     elif function_name == 'BL':
         return np.array([1, 2])
     elif function_name == 'RB':
         return np.array([-2.1, 2.1])
-    elif function_name == 'ST':
-        return np.array([0, 0])
 
 p = AP()
 p.add_argument('--optim', required=True, help='Optimizers: GD | CM | Adam | Adagrad | Adadelta | RMSprop')
-p.add_argument('--fn', required=True, help='Function name: B1 | B2 | B3 | BL | RB | ST')
+p.add_argument('--fn', required=True, help='Function name: B1 | B2 | B3 | BL | RB')
 p.add_argument('--iter', default=1000, type=int, help='Number of iterations to run for')
 p = p.parse_args()
 
@@ -40,8 +38,10 @@ if p.optim == 'GD':
         i = 0
         X = give_init(p.fn)
         log_file = open('{0}/log_{1}_{2}.txt'.format(newDir, lr, p.fn), 'w')
+        iter_file = open('{0}/iter_{1}_{2}.txt'.format(newDir, lr, p.fn), 'w')
         while i < p.iter:
             log_file.write('{0}\t{1}\n'.format(i, f._func_dicts[p.fn](X)))
+            iter_file.write('{0}\t{1}\n'.format(round(X[0], 5), round(X[1], 5)))
             G = g._grad_dicts[p.fn](X)
             i, X = o._opt_dicts[p.optim](i, X, G, lr)
         log_file.close()
@@ -54,8 +54,10 @@ elif p.optim == 'CM':
         i = 0
         X = give_init(p.fn)
         log_file = open('{0}/log_{1}_{2}.txt'.format(newDir, lr, p.fn), 'w')
+        iter_file = open('{0}/iter_{1}_{2}.txt'.format(newDir, lr, p.fn), 'w')
         while i < p.iter:
             log_file.write('{0}\t{1}\n'.format(i, f._func_dicts[p.fn](X)))
+            iter_file.write('{0}\t{1}\n'.format(round(X[0], 5), round(X[1], 5)))
             G = g._grad_dicts[p.fn](X)
             i, X, v = o._opt_dicts[p.optim](i, X, G, v, lr, m)
         log_file.close()
@@ -68,8 +70,10 @@ elif p.optim == 'Adam':
         i = 0
         X = give_init(p.fn)
         log_file = open('{0}/log_{1}_{2}.txt'.format(newDir, lr, p.fn), 'w')
+        iter_file = open('{0}/iter_{1}_{2}.txt'.format(newDir, lr, p.fn), 'w')
         while i < p.iter:
             log_file.write('{0}\t{1}\n'.format(i, f._func_dicts[p.fn](X)))
+            iter_file.write('{0}\t{1}\n'.format(round(X[0], 5), round(X[1], 5)))
             G = g._grad_dicts[p.fn](X)
             i, X, fm, sm = o._opt_dicts[p.optim](i, X, G, lr, fm, sm)
         log_file.close()
@@ -81,8 +85,10 @@ elif p.optim == 'Adagrad':
         i = 0
         X = give_init(p.fn)
         log_file = open('{0}/log_{1}_{2}.txt'.format(newDir, lr, p.fn), 'w')
+        iter_file = open('{0}/iter_{1}_{2}.txt'.format(newDir, lr, p.fn), 'w')
         while i < p.iter:
             log_file.write('{0}\t{1}\n'.format(i, f._func_dicts[p.fn](X)))
+            iter_file.write('{0}\t{1}\n'.format(round(X[0], 5), round(X[1], 5)))
             G = g._grad_dicts[p.fn](X)
             i, X, ssg = o._opt_dicts[p.optim](i, X, G, ssg, lr)
         log_file.close()
@@ -95,8 +101,10 @@ elif p.optim == 'Adadelta':
         i = 0
         X = give_init(p.fn)
         log_file = open('{0}/log_{1}_{2}.txt'.format(newDir, lr, p.fn), 'w')
+        iter_file = open('{0}/iter_{1}_{2}.txt'.format(newDir, lr, p.fn), 'w')
         while i < p.iter:
             log_file.write('{0}\t{1}\n'.format(i, f._func_dicts[p.fn](X)))
+            iter_file.write('{0}\t{1}\n'.format(round(X[0], 5), round(X[1], 5)))
             G = g._grad_dicts[p.fn](X)
             i, X, eg, edx = o._opt_dicts[p.optim](i, X, G, eg, edx, lr)
         log_file.close()
@@ -108,8 +116,10 @@ elif p.optim == 'RMSprop':
         i = 0
         X = give_init(p.fn)
         log_file = open('{0}/log_{1}_{2}.txt'.format(newDir, lr, p.fn), 'w')
+        iter_file = open('{0}/iter_{1}_{2}.txt'.format(newDir, lr, p.fn), 'w')
         while i < p.iter:
             log_file.write('{0}\t{1}\n'.format(i, f._func_dicts[p.fn](X)))
+            iter_file.write('{0}\t{1}\n'.format(round(X[0], 5), round(X[1], 5)))
             G = g._grad_dicts[p.fn](X)
             i, X, eg = o._opt_dicts[p.optim](i, X, G, eg, lr)
         log_file.close()

@@ -67,14 +67,4 @@ def BL(X):
     dy  = cmn1*tmy1 + cmn2*tmy2 + cmn3*tmy3
     return np.array([dx, dy])
 
-def ST(X):
-    """
-        Returns gradient of Styblinsky-Tang's function at a point
-    """
-    x = X[0]
-    y = X[1]
-    dx = 4*x**3 - 32*x + 5
-    dy = 4*y**3 - 32*y + 5
-    return np.array([dx, dy])
-
-_grad_dicts = {'B1': B1, 'B2': B2, 'B3': B3, 'RB': RB, 'BL': BL, 'ST': ST}
+_grad_dicts = {'B1': B1, 'B2': B2, 'B3': B3, 'RB': RB, 'BL': BL}
