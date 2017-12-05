@@ -22,3 +22,4 @@ Coursework pertaining to CS6230 : Optimization Methods in Machine Learning offer
 
 ### Project
 + Empirical study of benefits of Adaptive Gradient Methods
++ Mostly inspired by [The Marginal Value of Adaptive Gradient Methods in Machine Learning](https://arxiv.org/abs/1705.08292) by Ashia C. Wilson, Rebecca Roelofs, Mitchell Stern, Nathan Srebro and Benjamin Recht
