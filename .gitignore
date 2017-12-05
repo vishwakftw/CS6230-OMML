@@ -1,7 +1,6 @@
 # pdflatex generated files
 *.aux
 *.log
-*.pdf
 *.nav
 *.toc
 *.out
