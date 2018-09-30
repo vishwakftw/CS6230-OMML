@@ -2,6 +2,10 @@
 \usepackage[margin=1in]{geometry}
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage{hyperref}
+
+\newcommand{\tr}{\mathrm{tr}}
+\newcommand{\deter}{\mathrm{det}}
 
 \title{Solutions to the Assignment - 1 : CS6230 - \\
 Optimization Methods in Machine Learning}
@@ -55,6 +59,40 @@ Consider the functions \(f_{1}(x) = \sqrt{|x|}\) and \(f_{2}(x) = \sqrt{|x - 1|}
 Now take the sum of these functions. Let \(f(x) = f_{1}(x) + f_{2}(x) = \sqrt{|x|} + \sqrt{|x-1|}\). Note that this function has two local minima: one at \(x = 0\) and the other at \(x = 1\). Consider \(\alpha \in [1, \sqrt{2}]\). Note that the \(\alpha\)-sublevel sets for this choice of \(\alpha\) is not convex, hence telling us that the sum of two quasi-convex functions is not necessarily convex.
 \end{flushleft}
 
+\section*{Question 3}
+\begin{flushleft}
+Consider an affine transformation of \(x\) given by matrices \(A \in \mathbb{R}^{k x n}\) and \(b \in \mathbb{R}^{k}\). We know that the domain of \(g(x)\) is \(\mathbb{R}^{n}\), which is convex. Note that \(Ax\) is a matrix-vector product given by:
+\begin{equation}
+Ax = \begin{bmatrix} a_{1}^{T}x \\ a_{2}^{T}x \\ \vdots \\ a_{k}^{T}x \end{bmatrix}
+\end{equation}
+Hence, \(y = Ax + b\) can be given by \(y_{i} = a_{i}^{T}x + b_{i}\quad i \in \{1, 2, \ldots, k\}\). Using a result in Boyd and Vanderberghe (Pg. 74), the canonical log-sum-exp function - \(f(x)\) is convex in \(x\).
+Now the composition of a convex and a convex function is convex: therefore \(g(x) = f(y(x)) = f(Ax + b)\) is convex.
+\(\newline\)
+
+An alternative solution would be to compute the Hessian of the function. First we have to compute the gradient. Denote \(\exp(a_{i}^{T}x + b_{i}) = E_{i}\):
+\begin{equation}
+\frac{\partial g}{\partial x_{j}} = \frac{\displaystyle \sum_{i=1}^{n} \exp(a_{i}^{T}x + b_{i})a_{ij}}{\displaystyle \sum_{i=1}^{k} \exp(a_{i}^{T}x + b_{i})} = \frac{\displaystyle \sum_{i=1}^{n} E_{i}a_{ij}}{\displaystyle \sum_{i=1}^{n} E_{i}}
+\end{equation}
+
+For a critical point:
+\begin{equation}
+\label{3-grad}
+\frac{\partial g}{\partial x_{q}} = \frac{\displaystyle \sum_{i=1}^{n} E_{i}a_{iq}}{\displaystyle \sum_{i=1}^{n} E_{i}} = 0
+\end{equation}
+
+Now compute the \(p;q^{th}\) element of the Hessian (ran out of symbols).
+\begin{equation}
+\frac{\partial^{2} g}{\partial x_{p} \partial x_{q}} = \underbrace{\frac{\displaystyle \sum_{i=1}^{k}E_{i}a_{iq}\sum_{i=1}^{k}E_{i}a_{ip}}{\displaystyle \sum_{i=1}^{k} (E_{i})^{2}}}_{= 0 \text{ due to Eqn \ref{3-grad}}} + \frac{\displaystyle \sum_{i=1}^{k}E_{i}a_{iq}a_{ip}}{\displaystyle \sum_{i=1}^{k} E_{i}}
+\end{equation}
+
+Now since the other term is only left, we have to show \(z^{T}Hz = \sum_{p,q=1}^{n}z_{p}z_{q}H_{pq} \geq 0\) to show that the function is convex.
+\begin{equation}
+\frac{n^2}{\displaystyle \sum_{i=1}^{k} E_{i}}\sum_{p=1}^{n}\sum_{q=1}^{n}\sum_{i=1}^{k}z_{p}z_{q}E_{i}a_{ip}a_{iq} = \frac{n^2}{\displaystyle \sum_{i=1}^{k} E_{i}}\sum_{i=1}^{k}E_{i}\sum_{p=1}^{n}z_{p}a_{ip}\sum_{q=1}^{n}z_{q}a_{iq} = \frac{n^2}{\displaystyle \sum_{i=1}^{k} E_{i}}\sum_{i=1}^{k}E_{i}\left(\sum_{p=1}^{n}z_{p}a_{ip}\right)^{2} \geq 0
+\end{equation}
+
+The last inequality comes due to the fact that \(E_{i} > 0 \forall i\), and \(x^{2} \geq 0 \forall x\).
+\end{flushleft}
+
 \section*{Question 4}
 \begin{flushleft}
 Proving the implication: if \(f\) is convex, then inequality in the question holds:
@@ -84,6 +122,79 @@ Now from \((\nabla f(\mathbf{x}) - \nabla f(\mathbf{y}))^{T}(x - y ) \geq 0\). T
 Now we know that: \(g(1) - g(0) = \displaystyle \int_{0}^{1} g'(\theta) d\theta \geq g'(0) d\theta\). This is because \(\nabla f\) is non-decreasing as shown above. \(g(1) - g(0) \geq g'(0) = \nabla f(\mathbf{x})^{T} (\mathbf{y} - \mathbf{x}) \implies g(0) \geq g(1) + \nabla f(\mathbf{y})^{T}(\mathbf{x} -\mathbf{y})\). From this: we get: \(f(\mathbf{x}) \geq f(\mathbf{y}) + \nabla f(\mathbf{y})^{T}(\mathbf{x} - \mathbf{y})\), which is the first order condition.
 \end{flushleft}
 
+\section*{Question 5}
+\subsection*{Question 5.a.}
+\begin{flushleft}
+We adopt a similar proof technique as used in Boyd and Vanderberghe (Pg. 74).
+\(\newline\)
+
+Consider \(X(t) = Z + tV\) where \(Z \succ 0\) and \(V \in S^{n}\) (symmetric matrices). Let \(t\) be the set of all values such that \(X(t)\) is PD.
+
+Now since \(X(t)\) is PD, \(X(t)^{-1}\) exists, and it given by:
+\begin{equation}
+X(t)^{-1} = [Z + tV]^{-1} = (Z[I + tZ^{-1}V])^{-1} = [I + tZ^{-1}V]^{-1}Z^{-1}
+\end{equation}
+
+A result in Matrix perturbations states that (analogous to a negative binomial expansion):
+\begin{multline}
+(I + tZ^{-1}V)^{-1} = I + tZ^{-1}V + t^{2}Z^{-1}VZ^{-1}V + \ldots\\\Rightarrow (I + tZ^{-1}V)^{-1}Z^{-1} = Z^{-1} + tZ^{-1}VZ^{-1} + t^{2}Z^{-1}VZ^{-1}VZ^{-1} + \ldots
+\end{multline}
+
+Let \(g(t)\) be given by:
+\begin{equation}
+g(t) = \tr(X(t)^{-1}) = \tr(Z^{-1}) + t\tr(Z^{-1}VZ^{-1}) + t^{2}\tr(Z^{-1}VZ^{-1}VZ^{-1}) + \ldots
+\end{equation}
+
+Now, compute the derivative of \(g(t)\) w.r.t. \(t\):
+\begin{gather}
+\frac{\partial g(t)}{\partial t} = \tr(Z^{-1}VZ^{-1}) + 2t\tr(Z^{-1}VZ^{-1}VZ^{-1}) + \ldots \\
+\Rightarrow \frac{\partial^{2} g(t)}{\partial t^{2}} = 2\tr(Z^{-1}VZ^{-1}VZ^{-1}) + \ldots \\
+\Rightarrow \frac{\partial^{2} g(t)}{\partial t^{2}} \vert_{t=0} = 2\tr(Z^{-1}VZ^{-1}VZ^{-1})
+\end{gather}
+
+Denote \(W = VZ^{-1}\). Hence:
+\begin{equation}
+\frac{\partial^{2} g(t)}{\partial t^{2}} \vert_{t=0} = 2\tr(Z^{-1}VZ^{-1}VZ^{-1}) = 2\tr(W^{T}Z^{-1}W)
+\end{equation}
+
+If \(Z\) is PD, then \(Z^{-1}\) is PD, and \(Z^{-1}V\) and \(VZ^{-1}\) are PD. Hence: \(\frac{\partial^{2} g(t)}{\partial t^{2}} \vert_{t=0} = 2\tr(W^{T}Z^{-1}W) \geq 0\), since the product of PD matrices is PSD. This means that \(g(0) = \tr(Z)\) is convex and \(Z \in S_{n}^{++}\).
+\end{flushleft}
+
+\subsection*{Question 5.b.}
+\begin{flushleft}
+Using a similar approach to 5.a, consider \(Y(t) = Z + tV\) where \(Z \succ 0\) and \(V \in S^{n}\).
+\begin{multline}
+Y(t) = Z + tV = Z^{0.5}[I + tZ^{-0.5}VZ^{-0.5}]Z^{0.5} \Rightarrow \deter(Y(t)) = \deter(Z^{0.5})\deter([I + tZ^{-0.5}VZ^{-0.5}])\deter(Z^{0.5})\\= \deter(Z)\deter([I + tZ^{-0.5}VZ^{-0.5}]).
+\end{multline}
+
+Consider the eigenvalues of \(Z^{-0.5}VZ^{-0.5}\) to be \(\{\lambda_{1}, \lambda_{2}, \ldots, \lambda_{n}\}\). Hence the eigenvalues of \(I + tZ^{-0.5}VZ^{-0.5}\) are \(\{1 + t\lambda_{1}, 1 + t\lambda_{2}, \ldots, 1 + t\lambda_{n}\}\).
+\(\newline\)
+
+Let \(h(t) = \deter(Z)^{\frac{1}{n}}\deter([I + tZ^{-0.5}VZ^{-0.5}])^{\frac{1}{n}}\):
+\begin{equation}
+h(t) = \deter(Z)^{\frac{1}{n}}\deter([I + tZ^{-0.5}VZ^{-0.5}])^{\frac{1}{n}} = \deter(Z)^{\frac{1}{n}}\left(\prod_{i=1}^{n}(1 + t\lambda_{i})\right)^{\frac{1}{n}}
+\end{equation}
+
+The second term involving the product is a geometric mean. Citing a result in Boyd and Vanderberghe about the geometric mean being concave for positive numbers, we show that \(h(t)\) is concave \(\forall t \in T\). The proof is complete by considering \(t = 0\).
+\end{flushleft}
+
+\section*{Question 7}
+\begin{flushleft}
+Consider the derivative of the function \(f(z) = |z|\) to be
+\begin{equation}
+f'(z) = \begin{cases} 1 & \text{ if} z \geq 0 \\ -1 & \text{ otherwise} \end{cases}
+\end{equation}
+
+Therefore, the Hessian can be written as:
+\begin{equation}
+\begin{bmatrix}
+2a & \pm 1 \\ \pm 1 & 2a
+\end{bmatrix}
+\end{equation}
+
+We need the eigenvalues to be \(> 0\), hence by finding the characteristic polynomial and extracting the roots we get \(a > \pm 0.5\). We take the intersection of the two sets, to finally get \(a > 0.5\).
+\end{flushleft}
+
 \section*{Question 8}
 \subsection*{Question 8.a.}
 \begin{flushleft}
@@ -105,7 +216,7 @@ Calculating the Hessian of equation \ref{8_1_1} we get:
 \end{cases}
 \end{equation}
 
-Now note that the eigenvalues of \(\nabla^{2} f(\mathbf{x})\) are \(\Lambda = \lbrace\frac{1}{x^{2}_{1}}, \frac{1}{x^{2}_{2}}, \ldots, \frac{1}{x^{2}_{n}}\rbrace\). Since the domain of \(f\) is \(\mathbb{R}^{n}_{++}\), we can most certainly assure that \(\nexists \lambda \in \Lambda\), such that \(\lambda \leq 0\). Hence it can be said that \(f\) is \(k\)-strongly convex with \(k = \min \Lambda\).
+Now note that the eigenvalues of \(\nabla^{2} f(\mathbf{x})\) are \(\Lambda = \lbrace\frac{1}{x^{2}_{1}}, \frac{1}{x^{2}_{2}}, \ldots, \frac{1}{x^{2}_{n}}\rbrace\). Since the domain of \(f\) is \(\mathbb{R}^{n}_{++}\), we can most certainly assure that \(\nexists \lambda \in \Lambda\), such that \(\lambda \leq 0\). Hence it can be said that \(f\) is strictly convex.
 \end{flushleft}
 
 \subsection*{Question 8.b.}
